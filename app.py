@@ -1,9 +1,9 @@
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db
+from models import db, connect_db, User,LikedAnime,WishListAnime
 
 
-app = flask(__name__)
+app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///otakuhaven'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
