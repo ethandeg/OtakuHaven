@@ -7,7 +7,6 @@ async function addLikedGenre(e) {
     if (e.target.dataset && e.target.tagName === 'BUTTON') {
         let res = await axios.post('/categories/liked', {
             'genre_id': e.target.dataset.id,
-            'genre_name': e.target.previousElementSibling.textContent
         })
 
         if (res.status === 201) {
