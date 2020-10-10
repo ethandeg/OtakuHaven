@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+
+}
+
+html {
+    font-size : 62.5%;
+}
+
+body{
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+}
+
+.container {
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.anime-block {
+    display: inline-block;
+    position: relative;
+    height: 15vh;
+    width: 25vh;
+    margin: 5vh;
+    border: solid black .1vh;
+    background: rgb(69,130,25);
+    background: linear-gradient(90deg, rgba(69,130,25,0.38699229691876746) 0%, rgba(53,185,86,0.15449929971988796) 30%, rgba(0,237,99,0.3337710084033614) 100%);0,36,1) 0%, rgba(60,60,170,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+.content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+
+.title {
+    font-size: 2vh;
+}
+
+.btn {
+    width: 5vh;
+    text-decoration : none;
+    padding: .5rem 1rem;
+    border-radius: 5rem;
+
+}
+
+.btn-blue {
+    background-color: blue;
+}
