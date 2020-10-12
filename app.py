@@ -42,7 +42,9 @@ def do_logout():
 
 @app.route('/')
 def show_categories():
-    return render_template('index.html', genres=genres)
+    ids = [genre.genre_id for genre in g.user.genre]
+
+    return render_template('index.html', genres=genres, ids=ids)
 
 @app.route('/secret')
 def secret_page():
@@ -105,3 +107,12 @@ def add_liked_categories():
     db.session.commit()
     response_json = jsonify(liked_genre=liked_genre.serialize())
     return (response_json, 201)
+
+@app.route('/categories/unlike', methods=['DELETE'])
+def remove_liked_category():
+    genre_id = int(request.json['genre_id'])
+    unliked_genre = UserGenre.query.filter_by(user_id = 1, genre_id=genre_id).first()
+    db.session.delete(unliked_genre)
+    db.session.commit()
+    json_message = {"message": "deleted"}
+    return jsonify(json_message)
