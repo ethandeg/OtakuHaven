@@ -37,15 +37,21 @@ async function postGenre(e){
             return
         }
     }
-    else if(e.target.dataset.liked === 'true'){
-        let res = await axios.delete('/categories/unlike', {
-            'genre_id': e.target.dataset.id
-        })
-        if(res.status === 200){
-            console.log(`You don't like ${e.target.previousElementSibling.textContent} anymore`)
-            e.target.dataset.liked = 'false'
-            return
-        }
-    }
+   else if(e.target.dataset.liked === 'true'){
+       deleteGenre(e,e.target.dataset.id)
+   }
 }
 
+async function deleteGenre(e,id){
+    res = await axios({
+        method: 'delete',
+        url: '/categories/unlike',
+        headers: {'Content-type': 'application/json'},
+        data:
+            {'genre_id': id}
+    })
+    if(res.status === 200){
+        console.log(`You don't like ${e.target.previousElementSibling.textContent}:(`)
+        e.target.dataset.liked = 'false'
+    }
+}

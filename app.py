@@ -111,7 +111,7 @@ def add_liked_categories():
 @app.route('/categories/unlike', methods=['DELETE'])
 def remove_liked_category():
     genre_id = int(request.json['genre_id'])
-    unliked_genre = UserGenre.query.filter_by(user_id = 1, genre_id=genre_id).first()
+    unliked_genre = UserGenre.query.filter_by(user_id = g.user.id, genre_id=genre_id).first()
     db.session.delete(unliked_genre)
     db.session.commit()
     json_message = {"message": "deleted"}
