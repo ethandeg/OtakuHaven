@@ -1,0 +1,13 @@
+<h1>Login</h1>
+<form action="{{ url_for('login_user') }}" method= 'POST'> 
+{{form.hidden_tag()}}
+{% for field in form %}
+    {%if field.widget.input_type != 'hidden' %}
+    {{field.label}}
+    {{field(class_='form-control')}}
+    {%else%}
+    {{field}}
+    {%endif%}
+    {% endfor %}
+    <button>Login</button>
+</form>
