@@ -100,7 +100,7 @@ def login_user():
 @app.route('/categories/liked', methods=['POST'])
 def add_liked_categories():
     genre_id = int(request.json['genre_id'])
-    liked_genre = UserGenre(user_id = 1, genre_id=genre_id)
+    liked_genre = UserGenre(user_id = g.user.id, genre_id=genre_id)
     db.session.add(liked_genre)
     db.session.commit()
     response_json = jsonify(liked_genre=liked_genre.serialize())
