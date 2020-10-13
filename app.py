@@ -2,8 +2,9 @@ from flask import Flask, request, render_template, redirect, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User,LikedAnime,WishListAnime, UserGenre
 from forms import UserForm
-from jikan import genres
+from jikan import genres, get_anime_from_genre
 from sqlalchemy.exc import IntegrityError
+from random import sample
 
 CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
@@ -42,16 +43,19 @@ def do_logout():
 
 @app.route('/')
 def show_categories():
-    ids = [genre.genre_id for genre in g.user.genre]
-
-    return render_template('index.html', genres=genres, ids=ids)
-
-@app.route('/secret')
-def secret_page():
     if g.user:
-        return render_template('secret.html')
+        ids = [genre.genre_id for genre in g.user.genre]
+        if len(ids) >= 3:
+        #     genre = sample(ids,3)
+        #     # animes = get_anime_from_genre(genre[0])
+        #     animes = [get_anime_from_genre(gen) for gen in genre]
+
+            return redirect(url_for(show_anime))
+        else:
+            return render_template('index.html', genres=genres, ids=ids)
     else:
-        return redirect('/login')
+        return "no logged in user"
+
 
 @app.route('/logout')
 def logout():
@@ -116,3 +120,29 @@ def remove_liked_category():
     db.session.commit()
     json_message = {"message": "deleted"}
     return jsonify(json_message)
+
+@app.route('/anime')
+def show_anime():
+    if g.user:
+        return render_template('anime.html')
+    else:
+        return 'no logged in user'
+
+@app.route('/anime', methods=['POST'])
+def get_anime():
+    if g.user:
+        ids = [genre.genre_id for genre in g.user.genre]
+        if len(ids) >= 3:
+            genre = sample(ids, 3)
+            animes = [get_anime_from_genre(gen) for gen in genre]
+            return jsonify(animes)
+        else:
+            genre = sample(ids, len(ids))
+            animes = [get_anime_from_genre(gen) for gen in genre]
+            return jsonify(animes)
+    else:
+        return jsonify(message= "not logged in")
+
+@app.route('/test')
+def test():
+    return render_template('test.html')

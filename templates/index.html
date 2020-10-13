@@ -7,14 +7,14 @@
     <div class='anime-block' data-id="{{genre['id']}}" data-liked = "true">
         <div class='content'>
             <span class='title'>{{genre['name']}}</span>
-            <button class='btn btn-blue' data-id="{{genre['id']}}" data-liked = "true">Like this Genre</button>
+            <button class='btn btn-blue' data-id="{{genre['id']}}" data-liked = "true">Unlike</button>
         </div>
     </div>
     {% else %}
     <div class='anime-block' data-id="{{genre['id']}}">
         <div class='content'>
             <span class='title'>{{genre['name']}}</span>
-            <button class='btn btn-blue' data-id="{{genre['id']}}" data-liked = "false">Like this Genre</button>
+            <button class='btn btn-blue' data-id="{{genre['id']}}" data-liked = "false">Like</button>
         </div>
     </div>
     {% endif %}

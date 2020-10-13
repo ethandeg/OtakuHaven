@@ -1,4 +1,5 @@
 import requests
+import json
 
 JIKAN_BASE_URL = 'https://api.jikan.moe/v3'
 
@@ -176,3 +177,19 @@ genres = [
         'name': 'Josei'
     },
 ]
+
+def get_anime_from_genre(id):
+    res = requests.get(f'{JIKAN_BASE_URL}/genre/anime/{id}')
+    pretty_json = json.loads(res.text)
+    # print(json.dumps(pretty_json, indent=2))
+    data = res.json()
+    results = []
+    name = [k['name'] for k in genres if k['id'] == id]
+    for result in data['anime']:
+        results.append( {
+            "mal_id": result['mal_id'],
+            "title": result['title'],
+            "image_url": result['image_url'],
+            "episodes": result['episodes']
+        })
+    return name, results

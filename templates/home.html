@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{%block title%}Home Page{%endblock%}
+{% block content%}
+<div class='container'>
+    <h2>{{animes[0][0][0]}} Anime</h2>
+    <ul>
+        {% for anime in animes[0][1] %}
+        <li>{{anime['mal_id']}}, {{anime['title']}}, {{anime['image_url']}}, {{anime['episodes']}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+</html>
