@@ -78,6 +78,15 @@ class LikedAnime(db.Model):
 
     user = db.relationship('User')
 
+    def serialize(self):
+        """Returns a dict representation of Liked Genre"""
+        return {
+            'mal_id': self.mal_id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'image_url': self.image_url
+        }
+
 class WishListAnime(db.Model):
     """Anime that a user will want to watch later"""
 
@@ -88,6 +97,15 @@ class WishListAnime(db.Model):
     image_url = db.Column(db.Text)
 
     user = db.relationship('User')
+
+    def serialize(self):
+        """returns dict repr of wished anime"""
+        return {
+            'mal_id': self.mal_id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'image_url': self.image_url
+        }
 
 class UserGenre(db.Model):
     """Genre Id's liked by User Ids"""

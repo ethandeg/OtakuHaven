@@ -50,7 +50,7 @@ def show_categories():
         #     # animes = get_anime_from_genre(genre[0])
         #     animes = [get_anime_from_genre(gen) for gen in genre]
 
-            return redirect(url_for(show_anime))
+            return redirect('/anime')
         else:
             return render_template('index.html', genres=genres, ids=ids)
     else:
@@ -131,14 +131,16 @@ def show_anime():
 @app.route('/anime', methods=['POST'])
 def get_anime():
     if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
         ids = [genre.genre_id for genre in g.user.genre]
         if len(ids) >= 3:
             genre = sample(ids, 3)
-            animes = [get_anime_from_genre(gen) for gen in genre]
+            animes = [get_anime_from_genre(gen,likes,wished) for gen in genre]
             return jsonify(animes)
         else:
             genre = sample(ids, len(ids))
-            animes = [get_anime_from_genre(gen) for gen in genre]
+            animes = [get_anime_from_genre(gen,likes,wished) for gen in genre]
             return jsonify(animes)
     else:
         return jsonify(message= "not logged in")
@@ -146,3 +148,55 @@ def get_anime():
 @app.route('/test')
 def test():
     return render_template('test.html')
+
+
+@app.route('/anime/like', methods=['POST'])
+def like_anime():
+    if g.user:
+        mal_id = int(request.json['mal_id'])
+        title = request.json['title']
+        image_url = request.json['image_url']
+        liked_anime= LikedAnime(mal_id=mal_id,user_id = g.user.id, image_url=image_url, title=title)
+        db.session.add(liked_anime)
+        db.session.commit()
+        response_json = jsonify(liked_anime=liked_anime.serialize())
+        return (response_json, 201)
+    else:
+        return jsonify(message='not logged in')
+
+@app.route('/anime/unlike', methods=['DELETE'])
+def delete_liked_anime():
+    if g.user:
+        mal_id = int(request.json['mal_id'])
+        unliked_anime = LikedAnime.query.filter_by(user_id = g.user.id ,mal_id=mal_id).first()
+        db.session.delete(unliked_anime)
+        db.session.commit()
+        json_message = {"message": "deleted"}
+        return jsonify(json_message)
+    else:
+        return jsonify(message='no logged in user')
+
+@app.route('/anime/wishlist', methods=['POST'])
+def add_anime_to_wishlist():
+    if g.user:
+        mal_id = int(request.json['mal_id'])
+        title = request.json['title']
+        image_url = request.json['image_url']
+        wished_anime = WishListAnime(user_id = g.user.id, mal_id=mal_id,title=title,image_url=image_url)
+        db.session.add(wished_anime)
+        db.session.commit()
+        response_json = jsonify(wish_anime=wished_anime.serialize())
+        return (response_json, 201)
+    else:
+        return jsonify(message='no logged in user')
+
+@app.route('/anime/wishlist', methods=['DELETE'])
+def unwish_anime():
+    if g.user:
+        mal_id = int(request.json['mal_id'])
+        unwished_anime = WishListAnime.query.filter_by(user_id = g.user.id, mal_id=mal_id).first()
+        db.session.delete(unwished_anime)
+        db.session.commit()
+        return jsonify(message="deleted")
+    else:
+        return jsonify(message='no logged in user')

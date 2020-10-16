@@ -178,18 +178,24 @@ genres = [
     },
 ]
 
-def get_anime_from_genre(id):
+def get_anime_from_genre(id,likes,wished):
     res = requests.get(f'{JIKAN_BASE_URL}/genre/anime/{id}')
     pretty_json = json.loads(res.text)
     # print(json.dumps(pretty_json, indent=2))
     data = res.json()
-    results = []
+    results = {
+        "genre": None,
+        "anime": []
+        }
     name = [k['name'] for k in genres if k['id'] == id]
+    results['genre'] = name[0]
     for result in data['anime']:
-        results.append( {
+        results["anime"].append( {
             "mal_id": result['mal_id'],
             "title": result['title'],
             "image_url": result['image_url'],
-            "episodes": result['episodes']
+            "episodes": result['episodes'],
+            "liked": True if result['mal_id'] in likes else False,
+            "wished": True if result['mal_id'] in wished else False
         })
-    return name, results
+    return results
