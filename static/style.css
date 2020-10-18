@@ -19,7 +19,8 @@ body{
     margin-right: 20%;
 }
 
-.anime-block {
+.anime-block,
+.genre-block {
     display: inline-block;
     position: relative;
     height: 15vh;

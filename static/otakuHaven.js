@@ -1,20 +1,23 @@
 let usersAnimeFromGenre = null
 const userAnime = []
-sendGenres = document.querySelectorAll('.content button')
+genreBlocks = document.querySelectorAll('.genre-block')
+let index = 0;
 
-for (let sendGenre of sendGenres) {
-    sendGenre.addEventListener('click', postGenre)
+
+for (let genreBlock of genreBlocks) {
+    genreBlock.addEventListener('click', handleGenre)
 }
 
 
 
 //Function for liking/unliking genres
-function postGenre(e) {
-    if (e.target.dataset.liked === 'false') {
-        likeGenre(e, e.target.dataset.id)
+function handleGenre(e) {
+    let target = Array.from(e.target.classList)
+    if (this.dataset.liked === 'false' && target.includes("like-btn")) {
+        likeGenre(e, this)
     }
-    else if (e.target.dataset.liked === 'true') {
-        deleteGenre(e, e.target.dataset.id)
+    else if (this.dataset.liked === 'true' && target.includes('like-btn')) {
+        deleteGenre(e, this)
     }
 }
 
@@ -22,40 +25,41 @@ function postGenre(e) {
 
 
 //unliking genres
-async function deleteGenre(e, id) {
+async function deleteGenre(e, inst) {
     res = await axios({
         method: 'delete',
         url: '/categories/unlike',
         headers: { 'Content-type': 'application/json' },
         data:
-            { 'genre_id': id }
+            { 'genre_id': inst.dataset.id }
     })
     if (res.status === 200) {
         console.log(`You don't like ${e.target.previousElementSibling.textContent}:(`)
-        e.target.dataset.liked = 'false'
-        e.target.parentElement.parentElement.dataset.liked = 'false'
+        inst.dataset.liked = 'false'
         e.target.textContent = 'Like'
     }
 }
 //liking genre
-async function likeGenre(e, id) {
+async function likeGenre(e, inst) {
     let res = await axios.post('/categories/liked', {
-        'genre_id': id
+        'genre_id': inst.dataset.id
     })
 
     if (res.status === 201) {
         console.log(`You officially like ${e.target.previousElementSibling.textContent}`)
-        e.target.dataset.liked = 'true'
-        e.target.parentElement.parentElement.dataset.liked = 'true'
+        inst.dataset.liked = 'true'
         e.target.textContent = 'Unlike'
         return
     }
 }
 
+//************** */
+//end of genres
 
+//Handling Anime//
 async function generateAnime() {
     usersAnimeFromGenre = await Anime.getAnime()
-    index = 0
+
     for (let i = 0; i < usersAnimeFromGenre.length; i++) {
         let fullRow = document.createElement('div')
         fullRow.classList.add('full-row')
