@@ -185,6 +185,7 @@ def get_anime_from_genre(id,likes,wished):
     data = res.json()
     results = {
         "genre": None,
+        "id": id,
         "anime": []
         }
     name = [k['name'] for k in genres if k['id'] == id]

@@ -19,13 +19,13 @@ body{
     margin-right: 20%;
 }
 
-.anime-block,
+
 .genre-block {
     display: inline-block;
     position: relative;
-    height: 15vh;
-    width: 25vh;
-    margin: 5vh;
+    height: 50rem;
+    width: 50rem;
+    margin: 10rem;
     border: solid black .1vh;
     background: rgb(69,130,25);
     background: linear-gradient(90deg, rgba(69,130,25,0.38699229691876746) 0%, rgba(53,185,86,0.15449929971988796) 30%, rgba(0,237,99,0.3337710084033614) 100%);0,36,1) 0%, rgba(60,60,170,1) 35%, rgba(0,212,255,1) 100%);
@@ -53,4 +53,19 @@ body{
 
 .btn-blue {
     background-color: blue;
+}
+
+.anime-block {
+    display: inline-block;
+    position: relative;
+    height: 50rem;
+    width: 50rem;
+    margin: 10rem;
+    border: solid black .1vh;
+    background: rgb(69,130,25);
+    background: linear-gradient(90deg, rgba(69,130,25,0.38699229691876746) 0%, rgba(53,185,86,0.15449929971988796) 30%, rgba(0,237,99,0.3337710084033614) 100%);0,36,1) 0%, rgba(60,60,170,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+.image-block {
+
 }

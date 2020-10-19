@@ -2,9 +2,9 @@ class Anime {
     constructor(animeObj) {
         this.title = animeObj.title;
         this.image_url = animeObj.image_url,
-            this.mal_id = animeObj.mal_id,
-            this.episodes = animeObj.episodes,
-            this.liked = animeObj.liked
+        this.mal_id = animeObj.mal_id,
+        this.episodes = animeObj.episodes,
+        this.liked = animeObj.liked
         this.wished = animeObj.wished
     }
 
@@ -78,14 +78,27 @@ class Anime {
         return res
     }
 
-    static async getAnime() {
+    static async getAnimeFromGenre() {
+        const results = []
         let res = await axios.post('/anime')
         let data = res.data
         console.log(data)
-        return data
+        for(let i = 0; i < data.length; i++){
+            let obj = {"genre": null, "anime": []}
+            let genre = new Genre(data[i].id, data[i].genre)
+            obj['genre'] = genre
+            for(let j = 0; j < data[i].anime.length; j++){
+                let anime = new Anime(data[i].anime[j])
+                obj.anime.push(anime)
+                
+        }
+        results.push(obj)
 
-
+        }
+        console.log(results)
+        return results
     }
+
 }
 
 // static async getStories() {

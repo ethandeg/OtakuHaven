@@ -2,77 +2,58 @@ let usersAnimeFromGenre = null
 const userAnime = []
 genreBlocks = document.querySelectorAll('.genre-block')
 let index = 0;
+const userGenres = []
 
 
 for (let genreBlock of genreBlocks) {
-    genreBlock.addEventListener('click', handleGenre)
+    genreBlock.addEventListener('click', handleGenreClick)
 }
 
 
 
 //Function for liking/unliking genres
-function handleGenre(e) {
+async function handleGenreClick(e) {
     let target = Array.from(e.target.classList)
+    //like genre
     if (this.dataset.liked === 'false' && target.includes("like-btn")) {
-        likeGenre(e, this)
+        let res = await API.likeGenre(this.dataset.id)
+        if (res.status === 201) {
+            console.log(`You officially like ${this.dataset.name}`)
+            this.dataset.liked = 'true'
+            e.target.textContent = 'Unlike'
+            return res
+        }
     }
+    //unlike genre
     else if (this.dataset.liked === 'true' && target.includes('like-btn')) {
-        deleteGenre(e, this)
+        let res = await API.unLikeGenre(this.dataset.id)
+        if(res.status === 200) {
+            console.log(`You don't like ${this.dataset.name}:(`)
+            this.dataset.liked = 'false'
+            e.target.textContent = 'Like'
+        }
     }
 }
 
-
-
-
-//unliking genres
-async function deleteGenre(e, inst) {
-    res = await axios({
-        method: 'delete',
-        url: '/categories/unlike',
-        headers: { 'Content-type': 'application/json' },
-        data:
-            { 'genre_id': inst.dataset.id }
-    })
-    if (res.status === 200) {
-        console.log(`You don't like ${e.target.previousElementSibling.textContent}:(`)
-        inst.dataset.liked = 'false'
-        e.target.textContent = 'Like'
-    }
-}
-//liking genre
-async function likeGenre(e, inst) {
-    let res = await axios.post('/categories/liked', {
-        'genre_id': inst.dataset.id
-    })
-
-    if (res.status === 201) {
-        console.log(`You officially like ${e.target.previousElementSibling.textContent}`)
-        inst.dataset.liked = 'true'
-        e.target.textContent = 'Unlike'
-        return
-    }
-}
 
 //************** */
 //end of genres
 
 //Handling Anime//
-async function generateAnime() {
-    usersAnimeFromGenre = await Anime.getAnime()
+async function generateAnimeFromGenre() {
+    usersAnimeFromGenre = await Anime.getAnimeFromGenre()
 
     for (let i = 0; i < usersAnimeFromGenre.length; i++) {
         let fullRow = document.createElement('div')
         fullRow.classList.add('full-row')
-        fullRow.innerHTML = `<h6>${usersAnimeFromGenre[i].genre}</h6>`
+        fullRow.innerHTML = `<h6>${usersAnimeFromGenre[i].genre.name}</h6>`
         document.querySelector('.container').append(fullRow)
         for (let j = 0; j < usersAnimeFromGenre[i].anime.length; j++) {
-            let anime = new Anime(usersAnimeFromGenre[i].anime[j])
-            userAnime.push(anime)
+            let anime = usersAnimeFromGenre[i].anime[j]
             let animeBlock = document.createElement('div')
             animeBlock.classList.add('anime-block')
             animeBlock.dataset.id = Number(anime.mal_id)
-            animeBlock.dataset.liked = anime.liked
-            animeBlock.dataset.wished = anime.wished
+            animeBlock.dataset.anime = JSON.stringify(anime)
             animeBlock.setAttribute('id', index)
             index++;
             animeBlock.innerHTML = anime.create()
@@ -82,58 +63,51 @@ async function generateAnime() {
     }
 
 }
-
+//liking/unliking anime
 async function handleAnimeClicks(e) {
     if (e.target.className === 'like-btn') {
-        console.log(e.target)
-        console.log(this)
-        if (this.dataset.liked === "false") {
-            likeAnime(this, e.target)
+        data = JSON.parse(this.dataset.anime)
+        let anime = new Anime(data)
+        if (data.liked === false) {
+            let res = await anime.like()
+            data.liked = true
+            anime.liked = true
+            this.dataset.anime = JSON.stringify(data)
+            e.target.textContent = "unlike"
+            console.log(res)
+            return res
         }
-        else if (this.dataset.liked === "true") {
-            unLikeAnime(this, e.target)
+        else if (data.liked === true) {
+            let res = await anime.unLike()
+            data.liked = false
+            anime.liked = false
+            this.dataset.anime = JSON.stringify(data)
+            e.target.textContent = 'like'
+            return res
         }
     }
 
     if (e.target.className === 'wish-btn') {
+        data = JSON.parse(this.dataset.anime)
+        let anime = new Anime(data)
         console.log(e.target)
         console.log(this)
-        if (this.dataset.wished === 'false') {
-            wishAnime(this, e.target)
+        console.log(data)
+        if (data.wished === false) {
+            let res = await anime.wish()
+            data.wished = true
+            anime.wished = true
+            this.dataset.anime = JSON.stringify(data)
+            e.target.textContent = "unwish"
+            return res
         }
-        else if (this.dataset.wished === 'true') {
-            unWishAnime(this, e.target)
+        else if (data.wished === true) {
+            let res = await anime.unWish()
+            data.wished = false
+            anime.wished = false
+            this.dataset.anime = JSON.stringify(data)
+            e.target.textContent = 'wish'
+            return res
         }
     }
-}
-
-
-
-
-
-
-
-async function likeAnime(int, target) {
-    await userAnime[Number(int.id)].like()
-    int.dataset.liked = true
-    target.textContent = "unlike"
-}
-
-async function unLikeAnime(int, target) {
-    await userAnime[Number(int.id)].unLike()
-    int.dataset.liked = false
-    target.textContent = 'Like'
-}
-
-
-async function wishAnime(int, target) {
-    await userAnime[Number(int.id)].wish()
-    int.dataset.wished = true
-    target.textContent = "unwish"
-}
-
-async function unWishAnime(int, target) {
-    await userAnime[Number(int.id)].unWish()
-    int.dataset.wished = false
-    target.textContent = 'Wish'
 }

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{%block title%}{{g.user.username}} Liked Animes{%endblock%}
+{% block content%}
+<h1>See What {{g.user.username}} Likes!</h1>
+{% for like in g.user.liked %}
+<div class="anime-block">
+    <div class="image-block">
+        <img src="{{like.image_url}}" alt="">
+    </div>
+    <div class="content">
+        <h6>{{like.title}}</h6>
+
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

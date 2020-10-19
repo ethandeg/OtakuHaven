@@ -200,3 +200,12 @@ def unwish_anime():
         return jsonify(message="deleted")
     else:
         return jsonify(message='no logged in user')
+
+@app.route('/user/liked')
+def show_user_liked_anime():
+    if g.user:
+        return render_template('liked.html')
+    
+
+    else:
+        return jsonify(message='no logged in user')
