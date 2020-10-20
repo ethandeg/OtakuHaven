@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{%block title%}{{g.user.username}} Liked Animes{%endblock%}
+{% block content%}
+<h1>{{g.user.username}}'s Wishlist</h1>
+{% for wish in g.user.wished %}
+{% if wish.mal_id in liked %}
+<div class="anime-block"
+    data-anime='{"title":"{{wish.title}}","image_url":"{{wish.image_url}}","mal_id":{{wish.mal_id}},"episodes":{{wish.episodes}},"liked":true,"wished":true}'>
+    <div class="image-block">
+        <img src="{{wish.image_url}}" alt="">
+    </div>
+    <div class="content">
+        <h6>{{wish.title}}</h6>
+        <button class="wish-btn">unwish</button>
+        <button class='like-btn'>unlike</button>
+    </div>
+</div>
+{% else %}
+<div class="anime-block"
+    data-anime='{"title":"{{wish.title}}","image_url":"{{wish.image_url}}","mal_id":{{wish.mal_id}},"episodes":{{wish.episodes}},"liked":false,"wished":true}'>
+    <div class="image-block">
+        <img src="{{wish.image_url}}" alt="">
+    </div>
+    <div class="content">
+        <h6>{{wish.title}}</h6>
+        <button class="wish-btn">unwish</button>
+        <button class='like-btn'>like</button>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}
+{% block script %}
+<script>
+    getBlocks()
+</script>
+{% endblock %}

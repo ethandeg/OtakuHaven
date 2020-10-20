@@ -3,14 +3,35 @@
 {% block content%}
 <h1>See What {{g.user.username}} Likes!</h1>
 {% for like in g.user.liked %}
-<div class="anime-block">
+{% if like.mal_id in wished %}
+<div class="anime-block"
+    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"episodes":{{like.episodes}},"liked":true,"wished":true}'>
     <div class="image-block">
         <img src="{{like.image_url}}" alt="">
     </div>
     <div class="content">
         <h6>{{like.title}}</h6>
-
+        <button class="wish-btn">unwish</button>
+        <button class='like-btn'>unlike</button>
     </div>
 </div>
+{% else %}
+<div class="anime-block"
+    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"episodes":{{like.episodes}},"liked":true,"wished":false}'>
+    <div class="image-block">
+        <img src="{{like.image_url}}" alt="">
+    </div>
+    <div class="content">
+        <h6>{{like.title}}</h6>
+        <button class="wish-btn">wish</button>
+        <button class='like-btn'>unlike</button>
+    </div>
+</div>
+{% endif %}
 {% endfor %}
+{% endblock %}
+{% block script %}
+<script>
+    getBlocks()
+</script>
 {% endblock %}

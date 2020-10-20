@@ -6,6 +6,7 @@ from jikan import genres, get_anime_from_genre
 from sqlalchemy.exc import IntegrityError
 from random import sample
 
+
 CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
@@ -156,7 +157,8 @@ def like_anime():
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
         image_url = request.json['image_url']
-        liked_anime= LikedAnime(mal_id=mal_id,user_id = g.user.id, image_url=image_url, title=title)
+        episodes = int(request.json['episodes'])
+        liked_anime= LikedAnime(mal_id=mal_id,user_id = g.user.id, image_url=image_url, title=title, episodes=episodes)
         db.session.add(liked_anime)
         db.session.commit()
         response_json = jsonify(liked_anime=liked_anime.serialize())
@@ -181,8 +183,9 @@ def add_anime_to_wishlist():
     if g.user:
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
+        episodes = int(request.json['episodes'])
         image_url = request.json['image_url']
-        wished_anime = WishListAnime(user_id = g.user.id, mal_id=mal_id,title=title,image_url=image_url)
+        wished_anime = WishListAnime(user_id = g.user.id, mal_id=mal_id,title=title,image_url=image_url, episodes=episodes)
         db.session.add(wished_anime)
         db.session.commit()
         response_json = jsonify(wish_anime=wished_anime.serialize())
@@ -204,8 +207,21 @@ def unwish_anime():
 @app.route('/user/liked')
 def show_user_liked_anime():
     if g.user:
-        return render_template('liked.html')
+        wished = [wish.mal_id for wish in g.user.wished]
+        return render_template('liked.html', wished=wished)
     
 
     else:
-        return jsonify(message='no logged in user')
+        return "no logged in user"
+
+
+
+@app.route('/user/wished')
+def show_user_wished_anime():
+    if g.user:
+        liked = [like.mal_id for like in g.user.liked]
+        return render_template('wished.html', liked=liked)
+    
+
+    else:
+        return "no logged in user"

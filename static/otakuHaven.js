@@ -1,8 +1,6 @@
 let usersAnimeFromGenre = null
-const userAnime = []
-genreBlocks = document.querySelectorAll('.genre-block')
-let index = 0;
-const userGenres = []
+const genreBlocks = document.querySelectorAll('.genre-block')
+
 
 
 for (let genreBlock of genreBlocks) {
@@ -27,7 +25,7 @@ async function handleGenreClick(e) {
     //unlike genre
     else if (this.dataset.liked === 'true' && target.includes('like-btn')) {
         let res = await API.unLikeGenre(this.dataset.id)
-        if(res.status === 200) {
+        if (res.status === 200) {
             console.log(`You don't like ${this.dataset.name}:(`)
             this.dataset.liked = 'false'
             e.target.textContent = 'Like'
@@ -54,8 +52,6 @@ async function generateAnimeFromGenre() {
             animeBlock.classList.add('anime-block')
             animeBlock.dataset.id = Number(anime.mal_id)
             animeBlock.dataset.anime = JSON.stringify(anime)
-            animeBlock.setAttribute('id', index)
-            index++;
             animeBlock.innerHTML = anime.create()
             fullRow.append(animeBlock)
             animeBlock.addEventListener('click', handleAnimeClicks)
@@ -66,6 +62,7 @@ async function generateAnimeFromGenre() {
 //liking/unliking anime
 async function handleAnimeClicks(e) {
     if (e.target.className === 'like-btn') {
+        console.log(this)
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
         if (data.liked === false) {
@@ -90,9 +87,6 @@ async function handleAnimeClicks(e) {
     if (e.target.className === 'wish-btn') {
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
-        console.log(e.target)
-        console.log(this)
-        console.log(data)
         if (data.wished === false) {
             let res = await anime.wish()
             data.wished = true
@@ -109,5 +103,12 @@ async function handleAnimeClicks(e) {
             e.target.textContent = 'wish'
             return res
         }
+    }
+}
+
+function getBlocks() {
+    const blocks = document.querySelectorAll('.anime-block')
+    for (let block of blocks) {
+        block.addEventListener('click', handleAnimeClicks)
     }
 }

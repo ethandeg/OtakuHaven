@@ -74,6 +74,7 @@ class LikedAnime(db.Model):
     mal_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), primary_key=True)
     title = db.Column(db.Text)
+    episodes = db.Column(db.Integer)
     image_url = db.Column(db.Text)
 
     user = db.relationship('User')
@@ -81,10 +82,11 @@ class LikedAnime(db.Model):
     def serialize(self):
         """Returns a dict representation of Liked Genre"""
         return {
-            'mal_id': self.mal_id,
-            'user_id': self.user_id,
-            'title': self.title,
-            'image_url': self.image_url
+            "mal_id": self.mal_id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "episodes": self.episodes,
+            "image_url": self.image_url
         }
 
 class WishListAnime(db.Model):
@@ -94,6 +96,7 @@ class WishListAnime(db.Model):
     mal_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'),primary_key=True)
     title = db.Column(db.Text)
+    episodes = db.Column(db.Integer)
     image_url = db.Column(db.Text)
 
     user = db.relationship('User')
@@ -104,6 +107,7 @@ class WishListAnime(db.Model):
             'mal_id': self.mal_id,
             'user_id': self.user_id,
             'title': self.title,
+            'episodes': self.episodes,
             'image_url': self.image_url
         }
 
