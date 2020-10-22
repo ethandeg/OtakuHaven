@@ -195,8 +195,47 @@ def get_anime_from_genre(id,likes,wished):
             "mal_id": result['mal_id'],
             "title": result['title'],
             "image_url": result['image_url'],
-            "episodes": result['episodes'],
             "liked": True if result['mal_id'] in likes else False,
             "wished": True if result['mal_id'] in wished else False
         })
     return results
+
+def search_for_specific_anime(query, likes=[],wished=[]):
+    res = requests.get(f'{JIKAN_BASE_URL}/search/anime?q={query}')
+    pretty_json = json.loads(res.text)
+    data = res.json()['results']
+    results = []
+    # print(json.dumps(pretty_json, indent=2))
+    for result in data:
+        results.append({
+            "mal_id": result['mal_id'],
+            "title": result['title'],
+            "image_url": result['image_url'],
+            "liked": True if result['mal_id'] in likes else False,
+            "wished": True if result['mal_id'] in wished else False
+        })
+
+    return results
+
+def get_full_anime_data(id):
+    res = requests.get(f'{JIKAN_BASE_URL}/anime/{id}')
+    data = res.json()
+    print(json.dumps(data, indent=2))
+
+
+
+def get_recommendations_by_anime(id=21, likes=[],wished=[]):
+    res = requests.get(f'{JIKAN_BASE_URL}/anime/{id}/recommendations')
+    results = []
+    data = res.json()['recommendations']
+    for result in data:
+        results.append({
+            "mal_id": result["mal_id"],
+            "title": result["title"],
+            "image_url": result["image_url"],
+            "liked": True if result["mal_id"] in likes else False,
+            "wished": True if result["mal_id"] in wished else False
+        })
+    return results
+
+

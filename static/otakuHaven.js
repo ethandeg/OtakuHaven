@@ -1,13 +1,57 @@
 let usersAnimeFromGenre = null
 const genreBlocks = document.querySelectorAll('.genre-block')
-
+const form = document.querySelector('.form')
 
 
 for (let genreBlock of genreBlocks) {
     genreBlock.addEventListener('click', handleGenreClick)
 }
+//handling search for specific anime
+form.addEventListener('submit', generateAnimeFromSearch)
 
+async function generateAnimeFromSearch(e) {
+    e.preventDefault()
+    const searchResults = document.querySelector('.search-results')
+    let text = document.querySelector('#query').value;
+    let data = await API.getAnimeBySearch(text)
+    searchResults.innerHTML = '';
+    document.querySelector('#query').textContent = ''
+    let row = document.createElement('div')
+    row.innerHTML = `<h3>${text}</h3>`
+    searchResults.append(row)
+    for (let i = 0; i < data.length; i++) {
+        let anime = data[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
 
+}
+
+//Handling search for anime based on a recommendation from another
+
+async function generateAnimeFromRecommendation() {
+    let res = await Anime.getAnimeFromRecommendation()
+    const searchResults = document.querySelector('.search-results')
+    searchResults.innerHTML = '';
+    let row = document.createElement('div')
+    row.innerHTML = `<h3>Because you like One Piece</h3>`
+    searchResults.append(row)
+    for (let i = 0; i < res.length; i++) {
+        let anime = res[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+}
 
 //Function for liking/unliking genres
 async function handleGenreClick(e) {

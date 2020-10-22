@@ -1,14 +1,23 @@
 {% extends 'base.html' %}
 {%block title%}Home Page{%endblock%}
 {% block content%}
+<header class='header'>
+    <h1>Welcome to OtakuHaven!</h1>
+</header>
 <div class='container'>
-    <h2>{{animes[0][0][0]}} Anime</h2>
-    <ul>
-        {% for anime in animes[0][1] %}
-        <li>{{anime['mal_id']}}, {{anime['title']}}, {{anime['image_url']}}, {{anime['episodes']}}</li>
-        {% endfor %}
-    </ul>
+    <form action="{{ url_for('search_anime') }}" class='form'>
+        <input type="text" name="query" id='query'>
+        <button>Search</button>
+
+    </form>
+    <div class="search-results">
+
+    </div>
 </div>
 {% endblock %}
 
-</html>
+{% block script %}
+<script>
+    generateAnimeFromRecommendation()
+</script>
+{% endblock %}

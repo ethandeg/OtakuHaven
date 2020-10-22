@@ -5,7 +5,7 @@
 {% for like in g.user.liked %}
 {% if like.mal_id in wished %}
 <div class="anime-block"
-    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"episodes":{{like.episodes}},"liked":true,"wished":true}'>
+    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"liked":true,"wished":true}'>
     <div class="image-block">
         <img src="{{like.image_url}}" alt="">
     </div>
@@ -17,7 +17,7 @@
 </div>
 {% else %}
 <div class="anime-block"
-    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"episodes":{{like.episodes}},"liked":true,"wished":false}'>
+    data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"liked":true,"wished":false}'>
     <div class="image-block">
         <img src="{{like.image_url}}" alt="">
     </div>

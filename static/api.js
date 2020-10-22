@@ -1,16 +1,16 @@
-class API{
-    constructor(){
-        
+class API {
+    constructor() {
+
     }
 
-    static async likeGenre(id){
+    static async likeGenre(id) {
         let res = await axios.post('/categories/liked', {
             'genre_id': id
         })
         return res
     }
 
-    static async unLikeGenre(id){
+    static async unLikeGenre(id) {
         let res = await axios({
             method: 'delete',
             url: '/categories/unlike',
@@ -22,14 +22,17 @@ class API{
         return res
     }
 
-    static async likeAnime(id, title, image_url){
-        let res = await axios.post('/anime/like', {
-            "mal_id": Number(id),
-            "title": title,
-            "image_url": image_url
-        })
-        console.log(res)
-        return res
+    static async getAnimeBySearch(query) {
+        let res = await axios.get(`/anime/search?query=${query}`)
+        const results = []
+        console.log(res.data)
+        for (let i = 0; i < res.data.length; i++) {
+            let anime = new Anime(res.data[i])
+            results.push(anime)
+        }
+        console.log(results)
+        return results
     }
+
 
 }

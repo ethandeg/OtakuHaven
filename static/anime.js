@@ -3,7 +3,6 @@ class Anime {
         this.title = animeObj.title;
         this.image_url = animeObj.image_url,
             this.mal_id = animeObj.mal_id,
-            this.episodes = animeObj.episodes,
             this.liked = animeObj.liked
         this.wished = animeObj.wished
     }
@@ -26,7 +25,6 @@ class Anime {
                                     <ul>
                                         <li>${this.image_url}</li>
                                         <li>${this.mal_id}</li>
-                                        <li>${this.episodes}</li>
                                         <li>${this.liked}</li>
                                         <button class = 'wish-btn'>${wishBtnText}</button>
                                         <button class = 'like-btn'>${likeBtnText}</button>
@@ -38,7 +36,6 @@ class Anime {
         let res = await axios.post('/anime/like', {
             "mal_id": Number(this.mal_id),
             "title": this.title,
-            "episodes": this.episodes,
             "image_url": this.image_url
         })
 
@@ -61,7 +58,6 @@ class Anime {
         let res = await axios.post('/anime/wishlist', {
             "mal_id": Number(this.mal_id),
             "title": this.title,
-            "episodes": Number(this.episodes),
             "image_url": this.image_url
         })
 
@@ -79,6 +75,34 @@ class Anime {
 
         return res
     }
+
+
+    static async getAnimeFromRecommendation() {
+        const results = []
+        if (this.mal_id) {
+            let res = await axios.get('/anime/recommend', {
+                "mal_id": Number(this.mal_id)
+            })
+            for (let i = 0; i < res.data.length; i++) {
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        } else {
+            let res = await axios.get('/anime/recommend')
+            for (let i = 0; i < res.data.length; i++) {
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        }
+
+
+
+    }
+
 
     static async getAnimeFromGenre() {
         const results = []
@@ -100,5 +124,6 @@ class Anime {
         console.log(results)
         return results
     }
+
 
 }
