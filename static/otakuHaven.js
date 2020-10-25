@@ -7,7 +7,10 @@ for (let genreBlock of genreBlocks) {
     genreBlock.addEventListener('click', handleGenreClick)
 }
 //handling search for specific anime
-form.addEventListener('submit', generateAnimeFromSearch)
+if (form) {
+    form.addEventListener('submit', generateAnimeFromSearch)
+}
+
 
 async function generateAnimeFromSearch(e) {
     e.preventDefault()
@@ -82,8 +85,27 @@ async function handleGenreClick(e) {
 //end of genres
 
 //Handling Anime//
-async function generateAnimeFromGenre() {
-    usersAnimeFromGenre = await Anime.getAnimeFromGenre()
+
+async function generateAnimeFromSpecificGenre(genre_id) {
+    usersAnimeFromGenre = await Genre.getAnimeFromSpecificGenre(genre_id)
+    let row = document.createElement('div')
+    row.classList.add('row')
+    row.innerHTML = `<h6>${usersAnimeFromGenre.genre.name}</h6>`
+    document.querySelector('.container').append(row)
+    for (let i = 0; i < usersAnimeFromGenre.anime.length; i++) {
+        let anime = usersAnimeFromGenre.anime[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+}
+
+async function generateRecommendedAnimeFromGenre() {
+    usersAnimeFromGenre = await Anime.getAnimeRecommendationsFromGenre()
 
     for (let i = 0; i < usersAnimeFromGenre.length; i++) {
         let fullRow = document.createElement('div')

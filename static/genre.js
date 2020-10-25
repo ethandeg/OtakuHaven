@@ -4,23 +4,17 @@ class Genre {
         this.name = name;
     }
 
-    // async likeGenre() {
-    //     let res = await axios.post('/categories/liked', {
-    //         'genre_id': this.id
-    //     })
-    //     console.log(res)
-    //     return res
-    // }
 
-    // async deleteGenre() {
-    //     res = await axios({
-    //         method: 'delete',
-    //         url: '/categories/unlike',
-    //         headers: { 'Content-type': 'application/json' },
-    //         data:
-    //             { 'genre_id': this.id }
-    //     })
-    //     console.log(res)
-    //     return res
-    // }
+    static async getAnimeFromSpecificGenre(genre_id) {
+        let res = await axios.get(`/api/genres/${genre_id}`)
+        let genre = new Genre(res.data.id, res.data.genre)
+        let newObj = { "genre": genre, "anime": [] }
+        for (let i = 0; i < res.data.anime.length; i++) {
+            let anime = new Anime(res.data.anime[i])
+            newObj.anime.push(anime)
+        }
+        console.log(newObj)
+        return newObj
+    }
+
 }

@@ -50,7 +50,7 @@ def show_categories():
 
             return redirect('/anime')
         else:
-            return render_template('index.html', genres=genres, ids=ids)
+            return redirect('/genres')
     else:
         return render_template('home.html')
 
@@ -103,12 +103,15 @@ def login_user():
 
 @app.route('/categories/liked', methods=['POST'])
 def add_liked_categories():
-    genre_id = int(request.json['genre_id'])
-    liked_genre = UserGenre(user_id = g.user.id, genre_id=genre_id)
-    db.session.add(liked_genre)
-    db.session.commit()
-    response_json = jsonify(liked_genre=liked_genre.serialize())
-    return (response_json, 201)
+    if g.user:
+        genre_id = int(request.json['genre_id'])
+        liked_genre = UserGenre(user_id = g.user.id, genre_id=genre_id)
+        db.session.add(liked_genre)
+        db.session.commit()
+        response_json = jsonify(liked_genre=liked_genre.serialize())
+        return (response_json, 201)
+    else:
+        return jsonify(message='no logged in user')
 
 @app.route('/categories/unlike', methods=['DELETE'])
 def remove_liked_category():
@@ -257,3 +260,29 @@ def recommendation_by_anime():
             res = get_recommendations_by_anime()
             return jsonify(res)
 
+@app.route('/genres')
+def show_genres():
+    if g.user:
+        ids = [genre.genre_id for genre in g.user.genre]
+        return render_template('genres.html',genres=genres, ids=ids)
+    else:
+        return render_template('genres.html',genres=genres)
+
+@app.route('/genres/<int:genre_id>')
+def show_anime_from_genre(genre_id):
+    if g.user:
+        ids = [genre.genre_id for genre in g.user.genre]
+        genre = [genre['name'] for genre in genres if genre_id == genre['id']]
+        return render_template('specific_genre.html', genre_name=genre[0],genre_id=genre_id, ids=ids)
+
+@app.route('/api/genres/<int:genre_id>')
+def get_anime_for_one_genre(genre_id):
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = get_anime_from_genre(genre_id, likes,wished)
+        return jsonify(res)
+    else:
+        res = get_anime_from_genre(genre_id)
+        return jsonify(res)
+        

@@ -104,7 +104,7 @@ class Anime {
     }
 
 
-    static async getAnimeFromGenre() {
+    static async getAnimeRecommendationsFromGenre() {
         const results = []
         let res = await axios.post('/anime')
         let data = res.data
@@ -124,6 +124,7 @@ class Anime {
         console.log(results)
         return results
     }
+
 
 
 }

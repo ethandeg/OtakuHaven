@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{%block title%}{{genre}} Anime{%endblock%}
+{% block content%}
+<div class='container'>
+    {% if genre_id in ids %}
+    <div class='genre-block' data-id="{{genre_id}}" data-liked="true" data-name="{{genre_name}}">
+        <div class='content'>
+            <span class='title'>{{genre['name']}}</span>
+            <a href="/genres/{{genre_id}}">Learn more about {{genre_name}}</a>
+            <button class='btn btn-blue like-btn'>Unlike</button>
+        </div>
+    </div>
+    {% else %}
+    <div class='genre-block' data-id="{{genre_id}}" data-name='{{genre_name}}' data-liked="false">
+        <div class='content'>
+            <span class='title'>{{genre_name}}</span>
+            <a href="/genres/{{genre_id}}">Learn more about {{genre_name}}</a>
+            <button class='btn btn-blue like-btn'>Like</button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const genre = document.querySelector('.genre-block')
+    const genre_id = Number(genre.dataset.id);
+    generateAnimeFromSpecificGenre(genre_id)
+</script>
+{% endblock %}

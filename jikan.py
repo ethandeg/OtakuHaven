@@ -178,7 +178,7 @@ genres = [
     },
 ]
 
-def get_anime_from_genre(id,likes,wished):
+def get_anime_from_genre(id,likes=[],wished=[]):
     res = requests.get(f'{JIKAN_BASE_URL}/genre/anime/{id}')
     pretty_json = json.loads(res.text)
     # print(json.dumps(pretty_json, indent=2))
