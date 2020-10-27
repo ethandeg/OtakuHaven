@@ -217,10 +217,24 @@ def search_for_specific_anime(query, likes=[],wished=[]):
 
     return results
 
-def get_full_anime_data(id):
+def get_full_anime_data(id,likes=[],wished=[]):
     res = requests.get(f'{JIKAN_BASE_URL}/anime/{id}')
+    results = {}
     data = res.json()
-    print(json.dumps(data, indent=2))
+    # print(json.dumps(data, indent=2))
+    results["title"] = data["title"]
+    results["mal_id"] = data["mal_id"]
+    results["image_url"] = data["image_url"]
+    results["trailer_url"] = data["trailer_url"]
+    results["episodes"] = data["episodes"]
+    results["status"] = data["status"]
+    results["aired"] = data["aired"]["string"]
+    results["synopsis"] = data["synopsis"]
+    results["score"] = data["score"]
+    results["liked"] = True if data["mal_id"] in likes else False
+    results["wished"] = True if data["mal_id"] in wished else False
+    #title,mal_id, image_url, trailer_url (if applicable), episodes, status, aired(string), synopsis, score
+    return results
 
 
 

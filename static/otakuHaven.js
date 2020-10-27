@@ -1,7 +1,18 @@
 let usersAnimeFromGenre = null
 const genreBlocks = document.querySelectorAll('.genre-block')
 const form = document.querySelector('.form')
+let modal = document.querySelector("#animeModal")
+let closeBtn = document.querySelector('.close')
 
+closeBtn.onclick = function(){
+    modal.style.display = "none";
+}
+
+window.onclick = function(e){
+    if(e.target == modal){
+        modal.style.display = "none";
+    }
+}
 
 for (let genreBlock of genreBlocks) {
     genreBlock.addEventListener('click', handleGenreClick)
@@ -170,7 +181,21 @@ async function handleAnimeClicks(e) {
             return res
         }
     }
+
+    if (e.target.tagName === 'IMG') {
+        modal.style.display = "block";
+        data = JSON.parse(this.dataset.anime)
+        let res = await API.getFullAnimeData(data.mal_id)
+        let insides = await Anime.createFullData(res.data)
+        document.querySelector('.modal-content').innerHTML = insides;
+        
+    } 
+
 }
+
+// function openModal(){
+
+// }
 
 function getBlocks() {
     const blocks = document.querySelectorAll('.anime-block')

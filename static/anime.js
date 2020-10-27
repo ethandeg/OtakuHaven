@@ -1,10 +1,10 @@
 class Anime {
     constructor(animeObj) {
         this.title = animeObj.title;
-        this.image_url = animeObj.image_url,
-            this.mal_id = animeObj.mal_id,
-            this.liked = animeObj.liked
-        this.wished = animeObj.wished
+        this.image_url = animeObj.image_url;
+        this.mal_id = animeObj.mal_id;
+        this.liked = animeObj.liked;
+        this.wished = animeObj.wished;
     }
 
     create() {
@@ -31,6 +31,24 @@ class Anime {
                                     </ul>`
     }
 
+    static async createFullData(obj){
+
+        let html = `<ul>
+                    <li>${obj.title}</li>
+                    <li>${obj.aired}</li>
+                    <li>${obj.episodes}</li>
+                    <li>${obj.image_url}</li>
+                    <li>${obj.liked}</li>
+                    <li>${obj.mal_id}</li>
+                    <li>${obj.score}</li>
+                    <li>${obj.status}</li>
+                    <li>${obj.synopsis}</li>
+                    <li>${obj.trailer_url}</li>
+                    <li>${obj.wished}</li>
+                </ul>`
+        return html
+
+    }
 
     async like() {
         let res = await axios.post('/anime/like', {

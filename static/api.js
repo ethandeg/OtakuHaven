@@ -34,5 +34,11 @@ class API {
         return results
     }
 
+    static async getFullAnimeData(id) {
+        let res = await axios.get(`/api/anime/${id}`)
+        console.log(res)
+        return res
+    }
+
 
 }

@@ -42,6 +42,23 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+
+@app.route('/getstarted/genres')
+def select_genres():
+    if g.user:
+        ids = [genre.genre_id for genre in g.user.genre]
+        return render_template('first_time/genres.html', ids=ids, genres=genres)
+    else:
+        return "no logged in user"
+
+@app.route('/getstarted/anime')
+def select_anime():
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        return render_template('first_time/anime.html', likes=likes)
+    else:
+        return "no logged in user"
+
 @app.route('/')
 def show_categories():
     if g.user:
@@ -79,7 +96,7 @@ def sign_up_user():
 
         do_login(user)
 
-        return redirect("/")
+        return redirect("/getstarted/genres")
     else:
         return render_template('signup.html',form=form)
 
@@ -286,3 +303,14 @@ def get_anime_for_one_genre(genre_id):
         res = get_anime_from_genre(genre_id)
         return jsonify(res)
         
+
+@app.route('/api/anime/<int:mal_id>')
+def get_data_for_anime(mal_id):
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = get_full_anime_data(mal_id, likes, wished)
+        return jsonify(res)
+    else:
+        res = get_full_anime_data(mal_id)
+        return jsonify(res)
