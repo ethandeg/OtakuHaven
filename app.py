@@ -30,6 +30,7 @@ def add_user_to_g():
 
     else:
         g.user = None
+        g.form = UserForm()
 
 def do_login(user):
     """Log in user."""
@@ -49,7 +50,7 @@ def select_genres():
         ids = [genre.genre_id for genre in g.user.genre]
         return render_template('first_time/genres.html', ids=ids, genres=genres)
     else:
-        return "no logged in user"
+        return redirect('/')
 
 @app.route('/getstarted/anime')
 def select_anime():
@@ -57,26 +58,18 @@ def select_anime():
         likes = [like.mal_id for like in g.user.liked]
         return render_template('first_time/anime.html', likes=likes)
     else:
-        return "no logged in user"
+        return redirect('/')
 
 @app.route('/')
 def show_categories():
-    if g.user:
-        ids = [genre.genre_id for genre in g.user.genre]
-        if len(ids) >= 3:
-
-            return redirect('/anime')
-        else:
-            return redirect('/genres')
-    else:
-        return render_template('home.html')
+    return render_template('home.html')
 
 
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
     do_logout()
-    return redirect('/login')
+    return redirect('/')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -92,11 +85,11 @@ def sign_up_user():
 
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return render_template('signup.html', form=form)
+            return jsonify(message="Username already taken")
 
         do_login(user)
 
-        return redirect("/getstarted/genres")
+        return jsonify(message="You are now signed up")
     else:
         return render_template('signup.html',form=form)
 
@@ -111,8 +104,12 @@ def login_user():
 
         if user:
             do_login(user)
+            info = {}
+            info["likes"] = [like.mal_id for like in user.liked]
+            info["wished"] = [wish.mal_id for wish in user.wished]
+            info["genres"] = [genre.genre_id for genre in user.genre]
             flash(f"Hello, {user.username}!", "success")
-            return redirect("/")
+            return jsonify(info)
 
         flash("Invalid credentials.", 'danger')
 
@@ -206,7 +203,7 @@ def add_anime_to_wishlist():
         response_json = jsonify(wish_anime=wished_anime.serialize())
         return (response_json, 201)
     else:
-        return jsonify(message='no logged in user')
+        return jsonify(message='not logged in')
 
 @app.route('/anime/wishlist', methods=['DELETE'])
 def unwish_anime():
@@ -255,7 +252,7 @@ def search_anime():
     
 
 
-@app.route('/anime/recommend')
+@app.route('/api/anime/recommend')
 def recommendation_by_anime():
 
     if g.user:
@@ -266,8 +263,13 @@ def recommendation_by_anime():
             res = get_recommendations_by_anime(id,liked,wished)
             return jsonify(res)
         except TypeError:
-            res = get_recommendations_by_anime(likes=liked, wished=wished)
-            return jsonify(res)
+            if liked:
+                id = sample(liked,1)[0]
+                res = get_recommendations_by_anime(id,likes=liked, wished=wished)
+                return jsonify(res)
+            else:
+                res = get_recommendations_by_anime(wished=wished)
+                return jsonify(res)
     else:
         try:
             id = request.json['mal_id']
@@ -314,3 +316,8 @@ def get_data_for_anime(mal_id):
     else:
         res = get_full_anime_data(mal_id)
         return jsonify(res)
+
+@app.route('/test')
+def test_1():
+    form = UserForm()
+    return jsonify(form)

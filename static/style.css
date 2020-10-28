@@ -80,9 +80,11 @@ body{
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
-  
+
+
   /* Modal Content */
-  .modal-content {
+  .anime-modal-content,
+  .login-modal-content {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;

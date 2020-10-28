@@ -1,19 +1,110 @@
 let usersAnimeFromGenre = null
-const genreBlocks = document.querySelectorAll('.genre-block')
+let genreBlocks = document.querySelectorAll('.genre-block')
 const form = document.querySelector('.form')
-let modal = document.querySelector("#animeModal")
-let closeBtn = document.querySelector('.close')
+let animeModal = document.querySelector("#animeModal")
+let closeBtn = document.querySelectorAll('.close')
+let loginModal = document.querySelector('#loginModal')
+let loginSignupLink = document.querySelector('#login-signup-link')
+let loginForm = document.querySelector('#login-form')
 
-closeBtn.onclick = function(){
-    modal.style.display = "none";
+// closeBtn.onclick = function(){
+//     animeModal.style.display = "none";
+//     loginModal.style.display = "none";
+//     // modal.removeEventListener("click", handleAnimeClicks)
+// }
+for (let close of closeBtn){
+    close.addEventListener('click', function(e){
+        animeModal.style.display = "none";
+        if(loginModal){
+            loginModal.style.display = "none";
+        }
+        
+    })
 }
 
 window.onclick = function(e){
-    if(e.target == modal){
-        modal.style.display = "none";
+    if(e.target == animeModal || e.target == loginModal){
+        animeModal.style.display = "none";
+        if(loginModal){
+            loginModal.style.display = "none";
+        }
+        // modal.removeEventListener("click", handleAnimeClicks)
     }
 }
+//************************* */
+//LOGIN LOGICE FOR SINGUPING/LOGGING IN AND UPDATING ANIME/GENRES
+if(loginSignupLink){
+    loginSignupLink.addEventListener('click',function(e){
+        e.preventDefault()
+        let loginBtn = document.querySelector('#login-btn')
+        if(loginForm.dataset.type === "login"){
+            loginForm.dataset.type = "signup"
+            loginBtn.textContent = "Signup"
+            loginSignupLink.textContent = "Already have an account? Click here to login."
+        } else {
+            loginForm.dataset.type = "login"
+            loginSignupLink.textContent = "Don't have an account yet? Click here to sign up!"
+            loginBtn.textContent = "Login"
+        }
+    })
+}
 
+if(loginForm){
+    loginForm.addEventListener('submit', async function(e){
+        e.preventDefault()
+        if(loginForm.dataset.type === 'login'){
+            let res = await axios.post('/login', {
+                "username": document.querySelector('#username').value,
+                "password": document.querySelector('#password').value,
+                "csrf_token": document.querySelector('#csrf_token').value
+            })
+        console.log(res)
+        let animeBlocks = document.querySelectorAll('.anime-block')
+           if(animeBlocks){
+               for(animeBlock of animeBlocks){
+                   if(Array.from(res.data.likes).includes(Number(animeBlock.dataset.id))){
+                       let data = JSON.parse(animeBlock.dataset.anime)
+                       data.liked = true
+                       let anime = new Anime(data)
+                       animeBlock.innerHTML = anime.create()
+                       animeBlock.dataset.anime = JSON.stringify(data)
+                   }
+                   if(Array.from(res.data.wished).includes(Number(animeBlock.dataset.id))){
+                       let data = JSON.parse(animeBlock.dataset.anime)
+                       data.wished = true
+                       let anime = new Anime(data)
+                       animeBlock.innerHTML = anime.create()
+                       animeBlock.dataset.anime = JSON.stringify(data)
+                   }
+               }
+           }
+           let genreBlocks = document.querySelectorAll(".genre-block")
+           if(genreBlocks){
+               for(genBlock of genreBlocks){
+                   if(Array.from(res.data.genres).includes(Number(genBlock.dataset.id))){
+                       genBlock.dataset.liked = true
+                       let gen = new Genre(Number(genBlock.dataset.id), genBlock.dataset.name, genBlock.dataset.liked)
+                       genBlock.innerHTML = gen.create()
+                   }
+               }
+           }
+            if(res.status === 200){
+                loginModal.style.display = "none"
+            }
+        } else {
+            let res = await axios.post('/signup', {
+                "username": document.querySelector('#username').value,
+                "password": document.querySelector('#password').value,
+                "csrf_token": document.querySelector('#csrf_token').value
+            })
+            if(res.status === 200){
+                loginModal.style.display = "none"
+                console.log(res)
+            }
+        }
+    })
+}
+//************************************************************** */
 for (let genreBlock of genreBlocks) {
     genreBlock.addEventListener('click', handleGenreClick)
 }
@@ -53,7 +144,7 @@ async function generateAnimeFromRecommendation() {
     const searchResults = document.querySelector('.search-results')
     searchResults.innerHTML = '';
     let row = document.createElement('div')
-    row.innerHTML = `<h3>Because you like One Piece</h3>`
+    row.innerHTML = `<h3>Anime for You</h3>`
     searchResults.append(row)
     for (let i = 0; i < res.length; i++) {
         let anime = res[i]
@@ -78,6 +169,9 @@ async function handleGenreClick(e) {
             this.dataset.liked = 'true'
             e.target.textContent = 'Unlike'
             return res
+        }
+        else if (res.data.message === "no logged in user"){
+            loginModal.style.display = "block";
         }
     }
     //unlike genre
@@ -143,13 +237,18 @@ async function handleAnimeClicks(e) {
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
         if (data.liked === false) {
-            let res = await anime.like()
-            data.liked = true
-            anime.liked = true
-            this.dataset.anime = JSON.stringify(data)
-            e.target.textContent = "unlike"
-            console.log(res)
-            return res
+                let res = await anime.like()
+                if(res.status === 201){
+                data.liked = true
+                anime.liked = true
+                this.dataset.anime = JSON.stringify(data)
+                e.target.textContent = "unlike"
+                console.log(res)
+                return res
+            }
+            else if(res.data.message === "not logged in"){
+                loginModal.style.display = "block";
+            }
         }
         else if (data.liked === true) {
             let res = await anime.unLike()
@@ -166,11 +265,18 @@ async function handleAnimeClicks(e) {
         let anime = new Anime(data)
         if (data.wished === false) {
             let res = await anime.wish()
-            data.wished = true
-            anime.wished = true
-            this.dataset.anime = JSON.stringify(data)
-            e.target.textContent = "unwish"
-            return res
+            if(res.status === 201){
+                data.wished = true
+                anime.wished = true
+                this.dataset.anime = JSON.stringify(data)
+                e.target.textContent = "unwish"
+                return res
+
+            }
+            else if (res.data.message === "not logged in"){
+                loginModal.style.display = "block"
+            }
+
         }
         else if (data.wished === true) {
             let res = await anime.unWish()
@@ -183,15 +289,19 @@ async function handleAnimeClicks(e) {
     }
 
     if (e.target.tagName === 'IMG') {
-        modal.style.display = "block";
+        animeModal.dataset.anime = this.dataset.anime
+        animeModal.style.display = "block";
         data = JSON.parse(this.dataset.anime)
         let res = await API.getFullAnimeData(data.mal_id)
         let insides = await Anime.createFullData(res.data)
-        document.querySelector('.modal-content').innerHTML = insides;
+        animeModal.innerHTML = insides;
+        // modal.addEventListener('click', handleAnimeClicks)
         
     } 
 
+
 }
+
 
 // function openModal(){
 

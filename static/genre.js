@@ -1,7 +1,8 @@
 class Genre {
-    constructor(id, name) {
+    constructor(id, name, liked) {
         this.id = id;
         this.name = name;
+        this.liked = liked
     }
 
 
@@ -15,6 +16,22 @@ class Genre {
         }
         console.log(newObj)
         return newObj
+    }
+
+    create() {
+        let likeBtnText
+        if (this.liked == "true") {
+            likeBtnText = 'unlike'
+        } else {
+            likeBtnText = 'like'
+        }
+        
+        return this.innerHTML = `<div class = "content">
+                                    <span class = "title">${this.name}</span>
+                                    <a href="/genres/${this.id}">Learn more about ${this.name}</a>
+                                    <button class = "btn btn-blue like-btn">${likeBtnText}</button>
+
+                                </div>`
     }
 
 }

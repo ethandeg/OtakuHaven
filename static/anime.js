@@ -32,6 +32,18 @@ class Anime {
     }
 
     static async createFullData(obj){
+        // let likeBtnText
+        // let wishBtnText
+        // if (obj.liked === true) {
+        //     likeBtnText = 'unlike'
+        // } else {
+        //     likeBtnText = 'like'
+        // }
+        // if (obj.wished === true) {
+        //     wishBtnText = 'unwish'
+        // } else {
+        //     wishBtnText = 'wish'
+        // }
 
         let html = `<ul>
                     <li>${obj.title}</li>
@@ -45,7 +57,8 @@ class Anime {
                     <li>${obj.synopsis}</li>
                     <li>${obj.trailer_url}</li>
                     <li>${obj.wished}</li>
-                </ul>`
+                </ul>
+                `
         return html
 
     }
@@ -98,7 +111,7 @@ class Anime {
     static async getAnimeFromRecommendation() {
         const results = []
         if (this.mal_id) {
-            let res = await axios.get('/anime/recommend', {
+            let res = await axios.get('/api/anime/recommend', {
                 "mal_id": Number(this.mal_id)
             })
             for (let i = 0; i < res.data.length; i++) {
@@ -108,7 +121,7 @@ class Anime {
             console.log(results)
             return results
         } else {
-            let res = await axios.get('/anime/recommend')
+            let res = await axios.get('/api/anime/recommend')
             for (let i = 0; i < res.data.length; i++) {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
