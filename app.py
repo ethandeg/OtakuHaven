@@ -299,11 +299,17 @@ def get_anime_for_one_genre(genre_id):
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        res = get_anime_from_genre(genre_id, likes,wished)
-        return jsonify(res)
+        try:
+            res = get_anime_from_genre(genre_id, likes,wished)
+            return jsonify(res)
+        except IndexError:
+            return jsonify(message="no more anime for this genre")
     else:
-        res = get_anime_from_genre(genre_id)
-        return jsonify(res)
+        try:
+            res = get_anime_from_genre(genre_id)
+            return jsonify(res)
+        except IndexError:
+            return jsonify(message="no more anime for this genre")
         
 
 @app.route('/api/anime/<int:mal_id>')
@@ -317,7 +323,3 @@ def get_data_for_anime(mal_id):
         res = get_full_anime_data(mal_id)
         return jsonify(res)
 
-@app.route('/test')
-def test_1():
-    form = UserForm()
-    return jsonify(form)

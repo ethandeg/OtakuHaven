@@ -232,7 +232,7 @@ async function generateRecommendedAnimeFromGenre() {
 }
 //liking/unliking anime
 async function handleAnimeClicks(e) {
-    if (e.target.className === 'like-btn') {
+    if (e.target.dataset.type === 'like-anime') {
         console.log(this)
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
@@ -260,7 +260,7 @@ async function handleAnimeClicks(e) {
         }
     }
 
-    if (e.target.className === 'wish-btn') {
+    if (e.target.dataset.type === 'wish-anime') {
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
         if (data.wished === false) {
@@ -295,6 +295,13 @@ async function handleAnimeClicks(e) {
         let res = await API.getFullAnimeData(data.mal_id)
         let insides = await Anime.createFullData(res.data)
         animeModal.innerHTML = insides;
+        let list = document.querySelector('.list')
+
+        for(let i = 0; i < res.data.genres.length; i++){
+            let genre = await Genre.createGenreButton(res.data.genres[i])
+            list.append(genre)
+
+        }
         // modal.addEventListener('click', handleAnimeClicks)
         
     } 

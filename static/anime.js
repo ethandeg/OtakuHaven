@@ -21,14 +21,17 @@ class Anime {
             wishBtnText = 'wish'
         }
 
-        return this.innerHtml = `<h6>${this.title}</h6>
-                                    <ul>
-                                        <li>${this.image_url}</li>
-                                        <li>${this.mal_id}</li>
-                                        <li>${this.liked}</li>
-                                        <button class = 'wish-btn'>${wishBtnText}</button>
-                                        <button class = 'like-btn'>${likeBtnText}</button>
-                                    </ul>`
+        return this.innerHtml = `<div class="anime-block__image">
+        <img src="${this.image_url}"
+            alt="${this.title}">
+    </div>
+    <div class="anime-block__title">
+        <h3 class="anime-block__title-header">${this.title}</h3>
+    </div>
+    <div class="anime-block__buttons">
+        <button class='btn btn-primary' data-type = "like-anime">${likeBtnText}</button>
+        <button class='btn btn-secondary' data-type = "wish-anime">${wishBtnText}</button>
+    </div>`
     }
 
     static async createFullData(obj){
@@ -45,7 +48,7 @@ class Anime {
         //     wishBtnText = 'wish'
         // }
 
-        let html = `<ul>
+        let html = `<ul class = "list">
                     <li>${obj.title}</li>
                     <li>${obj.aired}</li>
                     <li>${obj.episodes}</li>
@@ -59,9 +62,12 @@ class Anime {
                     <li>${obj.wished}</li>
                 </ul>
                 `
+        
+
         return html
 
     }
+
 
     async like() {
         let res = await axios.post('/anime/like', {

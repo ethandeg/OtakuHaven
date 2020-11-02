@@ -33,5 +33,11 @@ class Genre {
 
                                 </div>`
     }
+    static async createGenreButton(genre){
+        let link = document.createElement('a')
+        link.textContent = genre.name
+        link.setAttribute('href', `/genres/${genre.mal_id}`)
+        return link
+    }
 
 }
