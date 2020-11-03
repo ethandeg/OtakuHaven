@@ -10,6 +10,27 @@
         <button>Search</button>
 
     </form>
+    <h4>Search by Season</h4>
+    <form id = 'seasonForm'>
+        <select name="year" id="year"></select>
+        <select name="season" id="season"></select>
+        <button>Search</button>
+    </form>
+    <h4>Search Top Anime</h4>
+    <form id = "idForm">
+        <select name="subtype" id="subtype">
+            <option value="airing">Airing</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="tv">TV</option>
+            <option value="movie">Movie</option>
+            <option value="ova">OVA</option>
+            <option value="special">Special</option>
+            <option value="bypopularity">By Popularity</option>
+            <option value="favorite">Favorite</option>
+        </select>
+        <button>Search</button>
+    </form>
+    <a href="#" id = 'day-of-week'>Click here to get anime for day of the week</a>
     <div class="search-results">
 
     </div>
@@ -19,5 +40,6 @@
 {% block script %}
 <script>
     generateAnimeFromRecommendation()
+    fillYears()
 </script>
 {% endblock %}

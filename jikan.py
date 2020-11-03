@@ -1,6 +1,7 @@
 import requests
 import json
 from random import shuffle
+import datetime
 
 JIKAN_BASE_URL = 'https://api.jikan.moe/v3'
 
@@ -226,6 +227,17 @@ for page in genres:
     shuffle(page["pages"])
 
 
+    weekdays = {
+        0: "monday",
+        1: "tuesday",
+        2: "wednesday",
+        3: "thursday",
+        4: "friday",
+        5: "saturday",
+        6: "sunday"
+    }
+    today = weekdays[datetime.datetime.today().weekday()]
+
 def get_anime_from_genre(id, likes=[], wished=[]):
     # IndexError if pages ran out
     pages = [k["pages"] for k in genres if k['id'] == id][0]
@@ -338,7 +350,14 @@ def get_years_and_seasons():
 
 
 def search_by_season(year, season, likes=[], wished=[]):
-    res = requests.get(f"{JIKAN_BASE_URL}/season/{year}/{season}")
+    if season == "Summer":
+        res = requests.get(f"{JIKAN_BASE_URL}/season/{year}/summer")
+    if season == "Winter":
+        res = requests.get(f"{JIKAN_BASE_URL}/season/{year}/winter")
+    if season == "Spring":
+        res = requests.get(f"{JIKAN_BASE_URL}/season/{year}/spring")
+    if season == "Fall":
+        res = requests.get(f"{JIKAN_BASE_URL}/season/{year}/fall")
     results = []
     data = res.json()
     for result in data["anime"]:
@@ -349,3 +368,34 @@ def search_by_season(year, season, likes=[], wished=[]):
             "liked": True if result["mal_id"] in likes else False,
             "wished": True if result["mal_id"] in wished else False
         })
+    return results
+
+
+def search_top_anime(subtype, likes=[], wished=[]):
+    res = requests.get(f"{JIKAN_BASE_URL}/top/anime/1/{subtype}")
+    data = res.json()
+    results = []
+    for result in data["top"]:
+        results.append({
+            "mal_id": result["mal_id"],
+            "title": result["title"],
+            "image_url": result["image_url"],
+            "liked": True if result["mal_id"] in likes else False,
+            "wished": True if result["mal_id"] in wished else False
+        })
+    return results
+
+def anime_by_day_of_week(day=today, likes=[], wished=[]):
+
+    res = requests.get(f'{JIKAN_BASE_URL}/schedule/{day}')
+    data = res.json()
+    results = []
+    for result in data[day]:
+        results.append({
+            "mal_id": result["mal_id"],
+            "title": result["title"],
+            "image_url": result["image_url"],
+            "liked": True if result["mal_id"] in likes else False,
+            "wished": True if result["mal_id"] in wished else False
+        })
+    return results

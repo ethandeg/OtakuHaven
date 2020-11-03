@@ -209,6 +209,27 @@ async function generateAnimeFromSpecificGenre(genre_id) {
     }
 }
 
+
+async function generateAnimeFromUpcomming(){
+    document.querySelector('.search-results').innerHTML = ''
+    let res = await API.getUpcomingAnime()
+    let row = document.createElement('div')
+    row.classList.add('row')
+    row.innerHTML = "<h3>Upcomming Anime</h3>"
+    document.querySelector('.search-results').append(row)
+    for(let i = 0; i < res.length; i++){
+        let anime = res[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+}
+
+
 async function generateRecommendedAnimeFromGenre() {
     usersAnimeFromGenre = await Anime.getAnimeRecommendationsFromGenre()
 
@@ -309,6 +330,107 @@ async function handleAnimeClicks(e) {
 
 }
 
+
+const yearInput = document.querySelector('#year')
+const seasonInput = document.querySelector('#season')
+async function fillYears(){
+    
+    let res = await API.getSeasonForm()
+    yearInput.addEventListener('change', fillSeasons)
+    for(let i = 0; i < res.data.length; i++){
+        let option = document.createElement('option')
+        option.value = res.data[i].year
+        option.textContent = res.data[i].year
+        yearInput.append(option)
+       
+    }
+
+}
+
+
+
+//Event listener for "change" to year input to run fillSeasons with year being value of input
+
+async function fillSeasons(){
+
+    seasonInput.innerHTML = '';
+    let res = await API.getSeasonForm()
+    for(let i = 0; i < res.data.length; i++){
+        if(res.data[i].year === Number(yearInput.value)){
+            for(let j = 0; j < res.data[i].seasons.length; j++){
+                let option = document.createElement('option')
+                option.value = res.data[i].seasons[j]
+                option.textContent = res.data[i].seasons[j]
+                seasonInput.append(option)
+            }
+        }
+    }
+}
+
+
+
+document.querySelector('#seasonForm').addEventListener('submit', async function(e){
+    e.preventDefault()
+
+    let res = await API.getAnimeFromSeason(yearInput.value,seasonInput.value)
+    document.querySelector('.search-results').innerHTML = ''
+    let row = document.createElement('div')
+    row.classList.add('row')
+    row.innerHTML = `<h3>${seasonInput.value} ${yearInput.value} Anime</h3>`
+    document.querySelector('.search-results').append(row)
+    for(let i = 0; i < res.length; i++){
+        let anime = res[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+
+})
+
+document.querySelector('#idForm').addEventListener('submit', async function(e){
+    e.preventDefault()
+    const typeValue = document.querySelector('#subtype').value
+    document.querySelector('.search-results').innerHTML = ''
+    let res = await API.getTopAnime(typeValue)
+    let row = document.createElement('div')
+    row.classList.add('row')
+    row.innerHTML = `<h3>Top ${typeValue} Anime</h3>`
+    document.querySelector('.search-results').append(row)
+    for(let i = 0; i < res.length; i++){
+        let anime = res[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+})
+
+document.querySelector('#day-of-week').addEventListener('click', async function(e){
+    e.preventDefault()
+    document.querySelector('.search-results').innerHTML = ''
+    let res = await API.getAnimeByDay()
+    let row = document.createElement('div')
+    row.classList.add('row')
+    row.innerHTML = `<h3>Anime you can watch today!</h3>`
+    document.querySelector('.search-results').append(row)
+    for(let i = 0; i < res.length; i++){
+        let anime = res[i]
+        let animeBlock = document.createElement('div')
+        animeBlock.classList.add('anime-block')
+        animeBlock.dataset.id = Number(anime.mal_id)
+        animeBlock.dataset.anime = JSON.stringify(anime)
+        animeBlock.innerHTML = anime.create()
+        row.append(animeBlock)
+        animeBlock.addEventListener('click', handleAnimeClicks)
+    }
+})
 
 // function openModal(){
 

@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User,LikedAnime,WishListAnime, UserGenre
 from forms import UserForm
-from jikan import genres, get_anime_from_genre, search_for_specific_anime,get_full_anime_data, get_recommendations_by_anime
+from jikan import genres, get_anime_from_genre, search_for_specific_anime,get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week
 from sqlalchemy.exc import IntegrityError
 from random import sample
 
@@ -323,3 +323,56 @@ def get_data_for_anime(mal_id):
         res = get_full_anime_data(mal_id)
         return jsonify(res)
 
+@app.route('/api/anime/upcoming')
+def show_upcoming_anime():
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = search_upcoming_anime(likes,wished)
+        return jsonify(res)
+    else:
+        res = search_upcoming_anime()
+        return jsonify(res)
+
+@app.route('/api/create_season_form')
+def get_season_form():
+    res = get_years_and_seasons()
+    return jsonify(res)
+
+@app.route('/api/anime/anime_by_season')
+def get_anime_by_season():
+    year = int(request.args['year'])
+    season = request.args['season']
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = search_by_season(year, season, likes,wished)
+        return jsonify(res)
+    else:
+        res = search_by_season(year,season)
+        return jsonify(res)
+
+
+@app.route('/api/anime/top')
+def get_top_anime():
+    subtype = request.args['subtype']
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.liked]
+        res = search_top_anime(subtype, likes, wished)
+        return jsonify(res)
+    else:
+        res = search_top_anime(subtype)
+        return jsonify(res)
+
+@app.route('/api/anime/day')
+def get_anime_by_day():
+    day = request.args.get("day", today)
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = anime_by_day_of_week(day,likes,wished)
+        return jsonify(res)
+    else:
+        res = anime_by_day_of_week(day)
+        return jsonify(res)

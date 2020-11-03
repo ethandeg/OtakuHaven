@@ -18,7 +18,6 @@ class API {
             data:
                 { 'genre_id': id }
         })
-        console.log(res)
         return res
     }
 
@@ -30,15 +29,70 @@ class API {
             let anime = new Anime(res.data[i])
             results.push(anime)
         }
-        console.log(results)
         return results
     }
 
     static async getFullAnimeData(id) {
         let res = await axios.get(`/api/anime/${id}`)
-        console.log(res)
         return res
     }
 
+    static async getUpcomingAnime(){
+        let res = await axios.get('/api/anime/upcoming')
+        const results = []
+        for(let i = 0; i < res.data.length; i++){
+            let anime = new Anime(res.data[i])
+            results.push(anime)
+        }
+        return results
+    }
+
+    static async getSeasonForm(){
+        let res = await axios.get('/api/create_season_form')
+        return res
+    }
+
+    static async getAnimeFromSeason(year,season){
+        const results = []
+        let res = await axios.get(`/api/anime/anime_by_season?year=${year}&season=${season}`)
+
+        for(let i = 0; i < res.data.length; i++){
+            let anime = new Anime(res.data[i])
+            results.push(anime)
+        }
+        return results
+    }
+    static async getTopAnime(subtype){
+        const results = []
+        let res = await axios.get(`/api/anime/top?subtype=${subtype}`)
+        for(let i = 0; i < res.data.length; i++){
+            let anime = new Anime(res.data[i])
+            results.push(anime)
+        }
+        return results
+    }
+
+    static async getAnimeByDay(day){
+        const results = []
+        if(day){
+            let res = await axios.get(`/api/anime/day?day=${day}`)
+            for(let i = 0; i < res.data.length; i++){
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+
+        } else {
+            let res = await axios.get(`/api/anime/day`)
+            for(let i = 0; i < res.data.length; i++){
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        }
+        
+    }
 
 }
