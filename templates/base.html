@@ -11,34 +11,41 @@
 </head>
 
 <body>
-    <div class="modal" id ="animeModal">
-        <span class="close">&times;</span>
-        <div class = "anime-modal-content">
-            
-            <p>Some text in the Modal...</p>
+    <div class="modal" id="animeModal">
+        <div class="anime-modal__content">
+            <span class="close">&times;</span>
+            <div class="anime-modal__container">
+
+            </div>
+
+
         </div>
     </div>
     {% if g.form %}
-    <div class="modal" id ="loginModal">
-        <span class="close">&times;</span>
-        <div class = "login-modal-content">
-            <form action="{{ url_for('login_user') }}" id = 'login-form' method= 'POST' data-type = "login"> 
-                {{g.form.hidden_tag()}}
-                {% for field in g.form %}
+    <div class="modal" id="loginModal">
+
+        <div class="login-modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-form">
+                <h3 class='login-title' id='login-title'>Login</h3>
+                <form action="{{ url_for('login_user') }}" id='login-form' method='POST' data-type="login">
+                    {{g.form.hidden_tag()}}
+                    {% for field in g.form %}
                     {%if field.widget.input_type != 'hidden' %}
-                    {{field.label}}
                     {{field(class_='form-control')}}
                     {%endif%}
                     {% endfor %}
-                    <button id = "login-btn">Login</button>
+                    <button id="login-btn" class="btn btn-primary-outline">Login</button>
                 </form>
-            
-            <p><a href="#" id = "login-signup-link">Don't have an account yet? Click here to sign up!</a></p>
+
+
+                <p><a href="#" id="login-signup-link">Don't have an account yet? Click here to sign up!</a></p>
+            </div>
         </div>
     </div>
     {% endif %}
 
-    
+
 
     {% block content %}{% endblock %}
 

@@ -35,36 +35,66 @@ class Anime {
     }
 
     static async createFullData(obj){
-        // let likeBtnText
-        // let wishBtnText
-        // if (obj.liked === true) {
-        //     likeBtnText = 'unlike'
-        // } else {
-        //     likeBtnText = 'like'
-        // }
-        // if (obj.wished === true) {
-        //     wishBtnText = 'unwish'
-        // } else {
-        //     wishBtnText = 'wish'
-        // }
+        if(obj.trailer_url){
+            
+            let html = `
+                            <div class = "anime-modal__title"><h2 class="anime-modal__hero--title">${obj.title}</h2></div>
+                            <div class = "anime-modal__hero">
+                            
+                            <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
+                        </div>
+                        <div class="anime-modal__data">
+                            <ul class="anime-modal__data--list">
+                                <li><strong>Episodes:</strong> ${obj.episodes}</li>
+                                <li><strong>Status:</strong> ${obj.status}</li>
+                                <li><strong>Aired:</strong> ${obj.aired}</li>
+                            </ul>
+                            <hr class="divider">
+                            <div class="anime-modal__data--synopsis mb-medium">
+                                ${obj.synopsis}
+                            </div>
+                            <div class = "anime-modal__data--genres">
+                            <strong>Genres: </strong>
+                            </div>
+                            <span class = "anime-modal__data--score mb-large"><i class = "fa fa-star" aria-hidden="true"></i>
+                                    ${obj.score}</span>
+                                    &nbsp;
+                            </div>
+                            `
+            
 
-        let html = `<ul class = "list">
-                    <li>${obj.title}</li>
-                    <li>${obj.aired}</li>
-                    <li>${obj.episodes}</li>
-                    <li>${obj.image_url}</li>
-                    <li>${obj.liked}</li>
-                    <li>${obj.mal_id}</li>
-                    <li>${obj.score}</li>
-                    <li>${obj.status}</li>
-                    <li>${obj.synopsis}</li>
-                    <li>${obj.trailer_url}</li>
-                    <li>${obj.wished}</li>
-                </ul>
-                `
-        
+            return html
+        } else{
+            let html = `
+                            <div class = "anime-modal__title">
+                            <h2 class="anime-modal__hero--title">${obj.title}</h2>
+                            </div>
+                            <div class = "anime-modal__hero" style = "height: 31rem; width: 25rem;">
+                            
+                            <img src = "${obj.image_url}" alt = "${obj.title}">
+                        </div>
+                        <div class="anime-modal__data pt-medium">
+                            <ul class="anime-modal__data--list">
+                                <li><strong>Episodes:</strong> ${obj.episodes}</li>
+                                <li><strong>Status:</strong> ${obj.status}</li>
+                                <li><strong>Aired:</strong> ${obj.aired}</li>
+                            </ul>
+                            <hr class="divider">
+                            <div class="anime-modal__data--synopsis mb-medium">
+                                ${obj.synopsis}
+                            </div>
+                            <div class = "anime-modal__data--genres">
+                            <strong>Genres: </strong>
+                            </div>
+                            <span class = "anime-modal__data--score mb-large"><i class = "fa fa-star" aria-hidden="true"></i>
+                                    ${obj.score}</span>
+                                    &nbsp;
+                            </div>
+            `
 
-        return html
+
+            return html
+        }
 
     }
 

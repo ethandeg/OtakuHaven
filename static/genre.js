@@ -36,7 +36,13 @@ class Genre {
     static async createGenreButton(genre){
         let link = document.createElement('a')
         link.textContent = genre.name
+        // <a href="#" class='btn btn-sm btn-blue mx-small mb-small'>Action</a>
         link.setAttribute('href', `/genres/${genre.mal_id}`)
+        link.classList.add('btn')
+        link.classList.add('btn-sm')
+        link.classList.add('btn-blue')
+        link.classList.add('mx-small')
+        link.classList.add('mb-small')
         return link
     }
 

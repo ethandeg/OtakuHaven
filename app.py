@@ -289,10 +289,12 @@ def show_genres():
 
 @app.route('/genres/<int:genre_id>')
 def show_anime_from_genre(genre_id):
+    genre = [genre['name'] for genre in genres if genre_id == genre['id']]
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
-        genre = [genre['name'] for genre in genres if genre_id == genre['id']]
         return render_template('specific_genre.html', genre_name=genre[0],genre_id=genre_id, ids=ids)
+    else:
+        return render_template('specific_genre.html', genre_name=genre[0], genre_id=genre_id)
 
 @app.route('/api/genres/<int:genre_id>')
 def get_anime_for_one_genre(genre_id):

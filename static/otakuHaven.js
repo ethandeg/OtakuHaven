@@ -12,20 +12,22 @@ let loginForm = document.querySelector('#login-form')
 //     loginModal.style.display = "none";
 //     // modal.removeEventListener("click", handleAnimeClicks)
 // }
-for (let close of closeBtn){
-    close.addEventListener('click', function(e){
+for (let close of closeBtn) {
+    close.addEventListener('click', function (e) {
         animeModal.style.display = "none";
-        if(loginModal){
+        document.querySelector('.anime-modal__container').innerHTML = ''
+        if (loginModal) {
             loginModal.style.display = "none";
         }
-        
+
     })
 }
 
-window.onclick = function(e){
-    if(e.target == animeModal || e.target == loginModal){
+window.onclick = function (e) {
+    if (e.target == animeModal || e.target == loginModal) {
         animeModal.style.display = "none";
-        if(loginModal){
+        document.querySelector('.anime-modal__container').innerHTML = ''
+        if (loginModal) {
             loginModal.style.display = "none";
         }
         // modal.removeEventListener("click", handleAnimeClicks)
@@ -33,62 +35,64 @@ window.onclick = function(e){
 }
 //************************* */
 //LOGIN LOGICE FOR SINGUPING/LOGGING IN AND UPDATING ANIME/GENRES
-if(loginSignupLink){
-    loginSignupLink.addEventListener('click',function(e){
+if (loginSignupLink) {
+    loginSignupLink.addEventListener('click', function (e) {
         e.preventDefault()
         let loginBtn = document.querySelector('#login-btn')
-        if(loginForm.dataset.type === "login"){
+        if (loginForm.dataset.type === "login") {
             loginForm.dataset.type = "signup"
             loginBtn.textContent = "Signup"
             loginSignupLink.textContent = "Already have an account? Click here to login."
+            document.querySelector('#login-title').textContent = "Sign Up"
         } else {
             loginForm.dataset.type = "login"
             loginSignupLink.textContent = "Don't have an account yet? Click here to sign up!"
             loginBtn.textContent = "Login"
+            document.querySelector('#login-title').textContent = "Login"
         }
     })
 }
 
-if(loginForm){
-    loginForm.addEventListener('submit', async function(e){
+if (loginForm) {
+    loginForm.addEventListener('submit', async function (e) {
         e.preventDefault()
-        if(loginForm.dataset.type === 'login'){
+        if (loginForm.dataset.type === 'login') {
             let res = await axios.post('/login', {
                 "username": document.querySelector('#username').value,
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
-        console.log(res)
-        let animeBlocks = document.querySelectorAll('.anime-block')
-           if(animeBlocks){
-               for(animeBlock of animeBlocks){
-                   if(Array.from(res.data.likes).includes(Number(animeBlock.dataset.id))){
-                       let data = JSON.parse(animeBlock.dataset.anime)
-                       data.liked = true
-                       let anime = new Anime(data)
-                       animeBlock.innerHTML = anime.create()
-                       animeBlock.dataset.anime = JSON.stringify(data)
-                   }
-                   if(Array.from(res.data.wished).includes(Number(animeBlock.dataset.id))){
-                       let data = JSON.parse(animeBlock.dataset.anime)
-                       data.wished = true
-                       let anime = new Anime(data)
-                       animeBlock.innerHTML = anime.create()
-                       animeBlock.dataset.anime = JSON.stringify(data)
-                   }
-               }
-           }
-           let genreBlocks = document.querySelectorAll(".genre-block")
-           if(genreBlocks){
-               for(genBlock of genreBlocks){
-                   if(Array.from(res.data.genres).includes(Number(genBlock.dataset.id))){
-                       genBlock.dataset.liked = true
-                       let gen = new Genre(Number(genBlock.dataset.id), genBlock.dataset.name, genBlock.dataset.liked)
-                       genBlock.innerHTML = gen.create()
-                   }
-               }
-           }
-            if(res.status === 200){
+            console.log(res)
+            let animeBlocks = document.querySelectorAll('.anime-block')
+            if (animeBlocks) {
+                for (animeBlock of animeBlocks) {
+                    if (Array.from(res.data.likes).includes(Number(animeBlock.dataset.id))) {
+                        let data = JSON.parse(animeBlock.dataset.anime)
+                        data.liked = true
+                        let anime = new Anime(data)
+                        animeBlock.innerHTML = anime.create()
+                        animeBlock.dataset.anime = JSON.stringify(data)
+                    }
+                    if (Array.from(res.data.wished).includes(Number(animeBlock.dataset.id))) {
+                        let data = JSON.parse(animeBlock.dataset.anime)
+                        data.wished = true
+                        let anime = new Anime(data)
+                        animeBlock.innerHTML = anime.create()
+                        animeBlock.dataset.anime = JSON.stringify(data)
+                    }
+                }
+            }
+            let genreBlocks = document.querySelectorAll(".genre-block")
+            if (genreBlocks) {
+                for (genBlock of genreBlocks) {
+                    if (Array.from(res.data.genres).includes(Number(genBlock.dataset.id))) {
+                        genBlock.dataset.liked = true
+                        let gen = new Genre(Number(genBlock.dataset.id), genBlock.dataset.name, genBlock.dataset.liked)
+                        genBlock.innerHTML = gen.create()
+                    }
+                }
+            }
+            if (res.status === 200) {
                 loginModal.style.display = "none"
             }
         } else {
@@ -97,7 +101,7 @@ if(loginForm){
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
-            if(res.status === 200){
+            if (res.status === 200) {
                 loginModal.style.display = "none"
                 console.log(res)
             }
@@ -170,7 +174,7 @@ async function handleGenreClick(e) {
             e.target.textContent = 'Unlike'
             return res
         }
-        else if (res.data.message === "no logged in user"){
+        else if (res.data.message === "no logged in user") {
             loginModal.style.display = "block";
         }
     }
@@ -210,14 +214,14 @@ async function generateAnimeFromSpecificGenre(genre_id) {
 }
 
 
-async function generateAnimeFromUpcomming(){
+async function generateAnimeFromUpcomming() {
     document.querySelector('.search-results').innerHTML = ''
     let res = await API.getUpcomingAnime()
     let row = document.createElement('div')
     row.classList.add('row')
     row.innerHTML = "<h3>Upcomming Anime</h3>"
     document.querySelector('.search-results').append(row)
-    for(let i = 0; i < res.length; i++){
+    for (let i = 0; i < res.length; i++) {
         let anime = res[i]
         let animeBlock = document.createElement('div')
         animeBlock.classList.add('anime-block')
@@ -258,8 +262,8 @@ async function handleAnimeClicks(e) {
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
         if (data.liked === false) {
-                let res = await anime.like()
-                if(res.status === 201){
+            let res = await anime.like()
+            if (res.status === 201) {
                 data.liked = true
                 anime.liked = true
                 this.dataset.anime = JSON.stringify(data)
@@ -267,7 +271,7 @@ async function handleAnimeClicks(e) {
                 console.log(res)
                 return res
             }
-            else if(res.data.message === "not logged in"){
+            else if (res.data.message === "not logged in") {
                 loginModal.style.display = "block";
             }
         }
@@ -286,7 +290,7 @@ async function handleAnimeClicks(e) {
         let anime = new Anime(data)
         if (data.wished === false) {
             let res = await anime.wish()
-            if(res.status === 201){
+            if (res.status === 201) {
                 data.wished = true
                 anime.wished = true
                 this.dataset.anime = JSON.stringify(data)
@@ -294,7 +298,7 @@ async function handleAnimeClicks(e) {
                 return res
 
             }
-            else if (res.data.message === "not logged in"){
+            else if (res.data.message === "not logged in") {
                 loginModal.style.display = "block"
             }
 
@@ -315,17 +319,17 @@ async function handleAnimeClicks(e) {
         data = JSON.parse(this.dataset.anime)
         let res = await API.getFullAnimeData(data.mal_id)
         let insides = await Anime.createFullData(res.data)
-        animeModal.innerHTML = insides;
-        let list = document.querySelector('.list')
+        document.querySelector('.anime-modal__container').innerHTML = insides;
+        let genreList = document.querySelector('.anime-modal__data--genres')
 
-        for(let i = 0; i < res.data.genres.length; i++){
+        for (let i = 0; i < res.data.genres.length; i++) {
             let genre = await Genre.createGenreButton(res.data.genres[i])
-            list.append(genre)
+            genreList.append(genre)
 
         }
         // modal.addEventListener('click', handleAnimeClicks)
-        
-    } 
+
+    }
 
 
 }
@@ -333,16 +337,16 @@ async function handleAnimeClicks(e) {
 
 const yearInput = document.querySelector('#year')
 const seasonInput = document.querySelector('#season')
-async function fillYears(){
-    
+async function fillYears() {
+
     let res = await API.getSeasonForm()
     yearInput.addEventListener('change', fillSeasons)
-    for(let i = 0; i < res.data.length; i++){
+    for (let i = 0; i < res.data.length; i++) {
         let option = document.createElement('option')
         option.value = res.data[i].year
         option.textContent = res.data[i].year
         yearInput.append(option)
-       
+
     }
 
 }
@@ -351,13 +355,13 @@ async function fillYears(){
 
 //Event listener for "change" to year input to run fillSeasons with year being value of input
 
-async function fillSeasons(){
+async function fillSeasons() {
 
     seasonInput.innerHTML = '';
     let res = await API.getSeasonForm()
-    for(let i = 0; i < res.data.length; i++){
-        if(res.data[i].year === Number(yearInput.value)){
-            for(let j = 0; j < res.data[i].seasons.length; j++){
+    for (let i = 0; i < res.data.length; i++) {
+        if (res.data[i].year === Number(yearInput.value)) {
+            for (let j = 0; j < res.data[i].seasons.length; j++) {
                 let option = document.createElement('option')
                 option.value = res.data[i].seasons[j]
                 option.textContent = res.data[i].seasons[j]
@@ -369,16 +373,16 @@ async function fillSeasons(){
 
 
 
-document.querySelector('#seasonForm').addEventListener('submit', async function(e){
+document.querySelector('#seasonForm').addEventListener('submit', async function (e) {
     e.preventDefault()
 
-    let res = await API.getAnimeFromSeason(yearInput.value,seasonInput.value)
+    let res = await API.getAnimeFromSeason(yearInput.value, seasonInput.value)
     document.querySelector('.search-results').innerHTML = ''
     let row = document.createElement('div')
     row.classList.add('row')
     row.innerHTML = `<h3>${seasonInput.value} ${yearInput.value} Anime</h3>`
     document.querySelector('.search-results').append(row)
-    for(let i = 0; i < res.length; i++){
+    for (let i = 0; i < res.length; i++) {
         let anime = res[i]
         let animeBlock = document.createElement('div')
         animeBlock.classList.add('anime-block')
@@ -391,7 +395,7 @@ document.querySelector('#seasonForm').addEventListener('submit', async function(
 
 })
 
-document.querySelector('#idForm').addEventListener('submit', async function(e){
+document.querySelector('#idForm').addEventListener('submit', async function (e) {
     e.preventDefault()
     const typeValue = document.querySelector('#subtype').value
     document.querySelector('.search-results').innerHTML = ''
@@ -400,7 +404,7 @@ document.querySelector('#idForm').addEventListener('submit', async function(e){
     row.classList.add('row')
     row.innerHTML = `<h3>Top ${typeValue} Anime</h3>`
     document.querySelector('.search-results').append(row)
-    for(let i = 0; i < res.length; i++){
+    for (let i = 0; i < res.length; i++) {
         let anime = res[i]
         let animeBlock = document.createElement('div')
         animeBlock.classList.add('anime-block')
@@ -412,7 +416,7 @@ document.querySelector('#idForm').addEventListener('submit', async function(e){
     }
 })
 
-document.querySelector('#day-of-week').addEventListener('click', async function(e){
+document.querySelector('#day-of-week').addEventListener('click', async function (e) {
     e.preventDefault()
     document.querySelector('.search-results').innerHTML = ''
     let res = await API.getAnimeByDay()
@@ -420,7 +424,7 @@ document.querySelector('#day-of-week').addEventListener('click', async function(
     row.classList.add('row')
     row.innerHTML = `<h3>Anime you can watch today!</h3>`
     document.querySelector('.search-results').append(row)
-    for(let i = 0; i < res.length; i++){
+    for (let i = 0; i < res.length; i++) {
         let anime = res[i]
         let animeBlock = document.createElement('div')
         animeBlock.classList.add('anime-block')
