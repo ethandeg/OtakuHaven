@@ -19,11 +19,36 @@ class Genre {
     }
 
     create() {
+    //     <div class='genre-block' data-id="{{genre_id}}" data-liked = true data-name="{{genre_name}}">
+    //     <div class='genre-block__title'>
+    //         <h3 class='genre-block__title--title'>{{genre_name}}</h3>
+    //     </div>
+    //     <div class="genre-block__footer">
+    //         <a href="/genres/{{genre_id}}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See {{genre_name}} Anime</a>
+    //         <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
+    //     </div>
+    // </div>
         let likeBtnText
         if (this.liked == "true") {
-            likeBtnText = 'unlike'
+            return this.innerHTML = `<div class = "genre-block__title">
+
+                                        <h3 class='genre-block__title--title'>${this.name}</h3>
+                 </div>
+                 <div class="genre-block__footer">
+                     <a href="/genres/${this.id}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
+                     <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
+                 </div>
+             </div>`
         } else {
-            likeBtnText = 'like'
+            return this.innerHTML = `<div class = "genre-block__title">
+
+                                        <h3 class='genre-block__title--title'>${this.name}</h3>
+                 </div>
+                 <div class="genre-block__footer">
+                     <a href="/genres/${this.id}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
+                     <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
+                 </div>
+             </div>`
         }
         
         return this.innerHTML = `<div class = "content">

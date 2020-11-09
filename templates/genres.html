@@ -2,21 +2,26 @@
 {%block title%}Genres{%endblock%}
 {% block content%}
 <div class='container'>
+    <h1>Anime Genres</h1>
     {% for genre in genres %}
     {% if genre['id'] in ids %}
     <div class='genre-block' data-id="{{genre['id']}}" data-liked = true data-name="{{genre['name']}}">
-        <div class='content'>
-            <span class='title'>{{genre['name']}}</span>
-            <a href="/genres/{{genre['id']}}">Learn more about {{genre['name']}}</a>
-            <button class='btn btn-blue like-btn'>Unlike</button>
+        <div class='genre-block__title'>
+            <h3 class='genre-block__title--title'>{{genre['name']}}</h3>
+        </div>
+        <div class="genre-block__footer">
+            <a href="/genres/{{genre['id']}}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See {{genre['name']}} Anime</a>
+            <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
         </div>
     </div>
     {% else %}
     <div class='genre-block' data-id="{{genre['id']}}" data-name='{{genre["name"]}}' data-liked= false>
-        <div class='content'>
-            <span class='title'>{{genre['name']}}</span>
-            <a href="/genres/{{genre['id']}}">Learn more about {{genre['name']}}</a>
-            <button class='btn btn-blue like-btn'>Like</button>
+        <div class='genre-block__title'>
+            <h3 class='genre-block__title--title'>{{genre['name']}}</h3>
+        </div>
+        <div class="genre-block__footer">
+            <a href="/genres/{{genre['id']}}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See {{genre['name']}} Anime</a>
+            <button class='btn btn-blue like-btn'><i class="fa fa-star-o" aria-hidden="true"></i> Like</button>
         </div>
     </div>
     {% endif %}
