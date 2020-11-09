@@ -1,10 +1,12 @@
-from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for,g
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, url_for, g, send_file, after_this_request
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User,LikedAnime,WishListAnime, UserGenre
+from models import db, connect_db, User, LikedAnime, WishListAnime, UserGenre
 from forms import UserForm
-from jikan import genres, get_anime_from_genre, search_for_specific_anime,get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week
+from jikan import genres, get_anime_from_genre, search_for_specific_anime, get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week
 from sqlalchemy.exc import IntegrityError
+from pdf import create_pdf, delete_pdf
 from random import sample
+import os
 
 
 CURR_USER_KEY = "curr_user"
@@ -32,10 +34,12 @@ def add_user_to_g():
         g.user = None
         g.form = UserForm()
 
+
 def do_login(user):
     """Log in user."""
 
     session[CURR_USER_KEY] = user.id
+
 
 def do_logout():
     """Logout user."""
@@ -52,6 +56,7 @@ def select_genres():
     else:
         return redirect('/')
 
+
 @app.route('/getstarted/anime')
 def select_anime():
     if g.user:
@@ -59,6 +64,7 @@ def select_anime():
         return render_template('first_time/anime.html', likes=likes)
     else:
         return redirect('/')
+
 
 @app.route('/')
 def show_categories():
@@ -91,7 +97,8 @@ def sign_up_user():
 
         return jsonify(message="You are now signed up")
     else:
-        return render_template('signup.html',form=form)
+        return render_template('signup.html', form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
@@ -115,11 +122,12 @@ def login_user():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/categories/liked', methods=['POST'])
 def add_liked_categories():
     if g.user:
         genre_id = int(request.json['genre_id'])
-        liked_genre = UserGenre(user_id = g.user.id, genre_id=genre_id)
+        liked_genre = UserGenre(user_id=g.user.id, genre_id=genre_id)
         db.session.add(liked_genre)
         db.session.commit()
         response_json = jsonify(liked_genre=liked_genre.serialize())
@@ -127,14 +135,17 @@ def add_liked_categories():
     else:
         return jsonify(message='no logged in user')
 
+
 @app.route('/categories/unlike', methods=['DELETE'])
 def remove_liked_category():
     genre_id = int(request.json['genre_id'])
-    unliked_genre = UserGenre.query.filter_by(user_id = g.user.id, genre_id=genre_id).first()
+    unliked_genre = UserGenre.query.filter_by(
+        user_id=g.user.id, genre_id=genre_id).first()
     db.session.delete(unliked_genre)
     db.session.commit()
     json_message = {"message": "deleted"}
     return jsonify(json_message)
+
 
 @app.route('/anime')
 def show_anime():
@@ -142,6 +153,7 @@ def show_anime():
         return render_template('anime.html')
     else:
         return 'no logged in user'
+
 
 @app.route('/anime', methods=['POST'])
 def get_anime():
@@ -151,14 +163,17 @@ def get_anime():
         ids = [genre.genre_id for genre in g.user.genre]
         if len(ids) >= 3:
             genre = sample(ids, 3)
-            animes = [get_anime_from_genre(gen,likes,wished) for gen in genre]
+            animes = [get_anime_from_genre(gen, likes, wished)
+                      for gen in genre]
             return jsonify(animes)
         else:
             genre = sample(ids, len(ids))
-            animes = [get_anime_from_genre(gen,likes,wished) for gen in genre]
+            animes = [get_anime_from_genre(gen, likes, wished)
+                      for gen in genre]
             return jsonify(animes)
     else:
-        return jsonify(message= "not logged in")
+        return jsonify(message="not logged in")
+
 
 @app.route('/test')
 def test():
@@ -171,7 +186,8 @@ def like_anime():
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
         image_url = request.json['image_url']
-        liked_anime= LikedAnime(mal_id=mal_id,user_id = g.user.id, image_url=image_url, title=title)
+        liked_anime = LikedAnime(
+            mal_id=mal_id, user_id=g.user.id, image_url=image_url, title=title)
         db.session.add(liked_anime)
         db.session.commit()
         response_json = jsonify(liked_anime=liked_anime.serialize())
@@ -179,11 +195,13 @@ def like_anime():
     else:
         return jsonify(message='not logged in')
 
+
 @app.route('/anime/unlike', methods=['DELETE'])
 def delete_liked_anime():
     if g.user:
         mal_id = int(request.json['mal_id'])
-        unliked_anime = LikedAnime.query.filter_by(user_id = g.user.id ,mal_id=mal_id).first()
+        unliked_anime = LikedAnime.query.filter_by(
+            user_id=g.user.id, mal_id=mal_id).first()
         db.session.delete(unliked_anime)
         db.session.commit()
         json_message = {"message": "deleted"}
@@ -191,13 +209,15 @@ def delete_liked_anime():
     else:
         return jsonify(message='no logged in user')
 
+
 @app.route('/anime/wishlist', methods=['POST'])
 def add_anime_to_wishlist():
     if g.user:
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
         image_url = request.json['image_url']
-        wished_anime = WishListAnime(user_id = g.user.id, mal_id=mal_id,title=title,image_url=image_url)
+        wished_anime = WishListAnime(
+            user_id=g.user.id, mal_id=mal_id, title=title, image_url=image_url)
         db.session.add(wished_anime)
         db.session.commit()
         response_json = jsonify(wish_anime=wished_anime.serialize())
@@ -205,27 +225,28 @@ def add_anime_to_wishlist():
     else:
         return jsonify(message='not logged in')
 
+
 @app.route('/anime/wishlist', methods=['DELETE'])
 def unwish_anime():
     if g.user:
         mal_id = int(request.json['mal_id'])
-        unwished_anime = WishListAnime.query.filter_by(user_id = g.user.id, mal_id=mal_id).first()
+        unwished_anime = WishListAnime.query.filter_by(
+            user_id=g.user.id, mal_id=mal_id).first()
         db.session.delete(unwished_anime)
         db.session.commit()
         return jsonify(message="deleted")
     else:
         return jsonify(message='no logged in user')
 
+
 @app.route('/user/liked')
 def show_user_liked_anime():
     if g.user:
         wished = [wish.mal_id for wish in g.user.wished]
         return render_template('liked.html', wished=wished)
-    
 
     else:
         return "no logged in user"
-
 
 
 @app.route('/user/wished')
@@ -233,10 +254,10 @@ def show_user_wished_anime():
     if g.user:
         liked = [like.mal_id for like in g.user.liked]
         return render_template('wished.html', liked=liked)
-    
 
     else:
         return "no logged in user"
+
 
 @app.route('/anime/search')
 def search_anime():
@@ -249,7 +270,6 @@ def search_anime():
     else:
         res = search_for_specific_anime(query)
         return jsonify(res)
-    
 
 
 @app.route('/api/anime/recommend')
@@ -260,12 +280,13 @@ def recommendation_by_anime():
         wished = [wish.mal_id for wish in g.user.wished]
         try:
             id = request.json['mal_id']
-            res = get_recommendations_by_anime(id,liked,wished)
+            res = get_recommendations_by_anime(id, liked, wished)
             return jsonify(res)
         except TypeError:
             if liked:
-                id = sample(liked,1)[0]
-                res = get_recommendations_by_anime(id,likes=liked, wished=wished)
+                id = sample(liked, 1)[0]
+                res = get_recommendations_by_anime(
+                    id, likes=liked, wished=wished)
                 return jsonify(res)
             else:
                 res = get_recommendations_by_anime(wished=wished)
@@ -279,22 +300,25 @@ def recommendation_by_anime():
             res = get_recommendations_by_anime()
             return jsonify(res)
 
+
 @app.route('/genres')
 def show_genres():
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
-        return render_template('genres.html',genres=genres, ids=ids)
+        return render_template('genres.html', genres=genres, ids=ids)
     else:
-        return render_template('genres.html',genres=genres)
+        return render_template('genres.html', genres=genres)
+
 
 @app.route('/genres/<int:genre_id>')
 def show_anime_from_genre(genre_id):
     genre = [genre['name'] for genre in genres if genre_id == genre['id']]
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
-        return render_template('specific_genre.html', genre_name=genre[0],genre_id=genre_id, ids=ids)
+        return render_template('specific_genre.html', genre_name=genre[0], genre_id=genre_id, ids=ids)
     else:
         return render_template('specific_genre.html', genre_name=genre[0], genre_id=genre_id)
+
 
 @app.route('/api/genres/<int:genre_id>')
 def get_anime_for_one_genre(genre_id):
@@ -302,7 +326,7 @@ def get_anime_for_one_genre(genre_id):
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
         try:
-            res = get_anime_from_genre(genre_id, likes,wished)
+            res = get_anime_from_genre(genre_id, likes, wished)
             return jsonify(res)
         except IndexError:
             return jsonify(message="no more anime for this genre")
@@ -312,7 +336,7 @@ def get_anime_for_one_genre(genre_id):
             return jsonify(res)
         except IndexError:
             return jsonify(message="no more anime for this genre")
-        
+
 
 @app.route('/api/anime/<int:mal_id>')
 def get_data_for_anime(mal_id):
@@ -325,21 +349,24 @@ def get_data_for_anime(mal_id):
         res = get_full_anime_data(mal_id)
         return jsonify(res)
 
+
 @app.route('/api/anime/upcoming')
 def show_upcoming_anime():
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        res = search_upcoming_anime(likes,wished)
+        res = search_upcoming_anime(likes, wished)
         return jsonify(res)
     else:
         res = search_upcoming_anime()
         return jsonify(res)
 
+
 @app.route('/api/create_season_form')
 def get_season_form():
     res = get_years_and_seasons()
     return jsonify(res)
+
 
 @app.route('/api/anime/anime_by_season')
 def get_anime_by_season():
@@ -348,10 +375,10 @@ def get_anime_by_season():
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        res = search_by_season(year, season, likes,wished)
+        res = search_by_season(year, season, likes, wished)
         return jsonify(res)
     else:
-        res = search_by_season(year,season)
+        res = search_by_season(year, season)
         return jsonify(res)
 
 
@@ -367,14 +394,27 @@ def get_top_anime():
         res = search_top_anime(subtype)
         return jsonify(res)
 
+
 @app.route('/api/anime/day')
 def get_anime_by_day():
     day = request.args.get("day", today)
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        res = anime_by_day_of_week(day,likes,wished)
+        res = anime_by_day_of_week(day, likes, wished)
         return jsonify(res)
     else:
         res = anime_by_day_of_week(day)
         return jsonify(res)
+
+
+@app.route('/api/createpdf', methods=['POST'])
+def create_wishlist_pdf():
+    if g.user:
+        html = request.form['wished-html']
+        create_pdf(html, g.user.username)
+        path = f"wishlists\\{g.user.username}.pdf"
+        return send_file(path, as_attachment=True)
+
+    else:
+        return "no logged in user"

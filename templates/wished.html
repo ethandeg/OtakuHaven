@@ -2,10 +2,14 @@
 {%block title%}{{g.user.username}} Liked Animes{%endblock%}
 {% block content%}
 <div class="container">
-<h1>{{g.user.username}}'s Wishlist</h1>
-{% for wish in g.user.wished %}
-{% if wish.mal_id in liked %}
-<div class="anime-block"
+    <h1>{{g.user.username}}'s Wishlist</h1>
+    <form action="{{url_for('create_wishlist_pdf')}}" method='POST'>
+        <input type="hidden" id="wished-html" name="wished-html">
+        <button>create pdf</button>
+    </form>
+    {% for wish in g.user.wished %}
+    {% if wish.mal_id in liked %}
+    <div class="anime-block"
         data-anime='{"title":"{{wish.title}}","image_url":"{{wish.image_url}}","mal_id":{{wish.mal_id}},"liked":true,"wished":true}'>
         <div class="anime-block__image">
             <img src="{{wish.image_url}}" alt="{{wish.title}}">
@@ -13,9 +17,9 @@
         <div class="anime-block__title">
             <h3 class="anime-block__title-header">{{wish.title}}</h3>
         </div>
-        <div class = "anime-block__buttons">
-            <button class="btn btn-primary" data-type = "like-anime">unlike</button>
-            <button class='btn btn-secondary' data-type= "wish-anime">unwish</button>
+        <div class="anime-block__buttons">
+            <button class="btn btn-primary" data-type="like-anime">unlike</button>
+            <button class='btn btn-secondary' data-type="wish-anime">unwish</button>
         </div>
     </div>
     {% else %}
@@ -27,18 +31,20 @@
         <div class="anime-block__title">
             <h3 class="anime-block__title-header">{{wish.title}}</h3>
         </div>
-        <div class = "anime-block__buttons">
-            <button class="btn btn-primary" data-type = "like-anime">like</button>
-            <button class='btn btn-secondary' data-type= "wish-anime">unwish</button>
+        <div class="anime-block__buttons">
+            <button class="btn btn-primary" data-type="like-anime">like</button>
+            <button class='btn btn-secondary' data-type="wish-anime">unwish</button>
         </div>
     </div>
 
-{% endif %}
-{% endfor %}
+    {% endif %}
+    {% endfor %}
 </div>
 {% endblock %}
 {% block script %}
 <script>
+    const html = document.querySelector('#wished-html')
+    html.value = document.querySelector('.container').innerHTML
     getBlocks()
 </script>
 {% endblock %}
