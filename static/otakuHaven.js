@@ -171,7 +171,7 @@ async function handleGenreClick(e) {
         if (res.status === 201) {
             console.log(`You officially like ${this.dataset.name}`)
             this.dataset.liked = 'true'
-            e.target.textContent = 'Unlike'
+            e.target.innerHTML = '<i class="fa fa-star" aria-hidden="true"></i> Unlike'
             return res
         }
         else if (res.data.message === "no logged in user") {
@@ -184,7 +184,7 @@ async function handleGenreClick(e) {
         if (res.status === 200) {
             console.log(`You don't like ${this.dataset.name}:(`)
             this.dataset.liked = 'false'
-            e.target.textContent = 'Like'
+            e.target.innerHTML = '<i class="fa fa-star-o" aria-hidden="true"></i> Like'
         }
     }
 }
