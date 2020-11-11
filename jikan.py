@@ -371,8 +371,8 @@ def search_by_season(year, season, likes=[], wished=[]):
     return results
 
 
-def search_top_anime(subtype, likes=[], wished=[]):
-    res = requests.get(f"{JIKAN_BASE_URL}/top/anime/1/{subtype}")
+def search_top_anime(subtype, likes=[], wished=[], page=1):
+    res = requests.get(f"{JIKAN_BASE_URL}/top/anime/{page}/{subtype}")
     data = res.json()
     results = []
     for result in data["top"]:

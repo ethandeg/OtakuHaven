@@ -37,46 +37,51 @@ class API {
         return res
     }
 
-    static async getUpcomingAnime(){
+    static async getUpcomingAnime() {
         let res = await axios.get('/api/anime/upcoming')
         const results = []
-        for(let i = 0; i < res.data.length; i++){
+        for (let i = 0; i < res.data.length; i++) {
             let anime = new Anime(res.data[i])
             results.push(anime)
         }
         return results
     }
 
-    static async getSeasonForm(){
+    static async getSeasonForm() {
         let res = await axios.get('/api/create_season_form')
         return res
     }
 
-    static async getAnimeFromSeason(year,season){
+    static async getAnimeFromSeason(year, season) {
         const results = []
         let res = await axios.get(`/api/anime/anime_by_season?year=${year}&season=${season}`)
 
-        for(let i = 0; i < res.data.length; i++){
+        for (let i = 0; i < res.data.length; i++) {
             let anime = new Anime(res.data[i])
             results.push(anime)
         }
         return results
     }
-    static async getTopAnime(subtype){
+    static async getTopAnime(subtype, page) {
         const results = []
-        let res = await axios.get(`/api/anime/top?subtype=${subtype}`)
-        for(let i = 0; i < res.data.length; i++){
-            let anime = new Anime(res.data[i])
-            results.push(anime)
+        let res = await axios.get(`/api/anime/top?subtype=${subtype}&page=${page}`)
+        if (res.data.message === 'page not found') {
+            return "page not found"
+        } else {
+            for (let i = 0; i < res.data.length; i++) {
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            return results
         }
-        return results
+
     }
 
-    static async getAnimeByDay(day){
+    static async getAnimeByDay(day) {
         const results = []
-        if(day){
+        if (day) {
             let res = await axios.get(`/api/anime/day?day=${day}`)
-            for(let i = 0; i < res.data.length; i++){
+            for (let i = 0; i < res.data.length; i++) {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
@@ -85,14 +90,14 @@ class API {
 
         } else {
             let res = await axios.get(`/api/anime/day`)
-            for(let i = 0; i < res.data.length; i++){
+            for (let i = 0; i < res.data.length; i++) {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
             console.log(results)
             return results
         }
-        
+
     }
 
 }

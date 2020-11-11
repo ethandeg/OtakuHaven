@@ -385,14 +385,21 @@ def get_anime_by_season():
 @app.route('/api/anime/top')
 def get_top_anime():
     subtype = request.args['subtype']
+    page = request.args['page']
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.liked]
-        res = search_top_anime(subtype, likes, wished)
-        return jsonify(res)
+        try:
+            res = search_top_anime(subtype, likes, wished, page)
+            return jsonify(res)
+        except KeyError:
+            return jsonify(message="page not found")
     else:
-        res = search_top_anime(subtype)
-        return jsonify(res)
+        try:
+            res = search_top_anime(subtype=subtype, page=page)
+            return jsonify(res)
+        except KeyError:
+            return jsonify(message="page not found")
 
 
 @app.route('/api/anime/day')
