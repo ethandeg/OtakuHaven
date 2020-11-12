@@ -5,8 +5,9 @@
 <h1>See What {{g.user.username}} Likes!</h1>
 {% for like in g.user.liked %}
 {% if like.mal_id in wished %}
-    <div class="anime-block"
+<div class="anime-container">
         data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"liked":true,"wished":true}'>
+
         <div class="anime-block__image">
             <img src="{{like.image_url}}" alt="{{like.title}}">
         </div>
@@ -34,6 +35,7 @@
     </div>
 {% endif %}
 {% endfor %}
+</div>
 </div>
 {% endblock %}
 {% block script %}

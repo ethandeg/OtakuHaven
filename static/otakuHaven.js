@@ -7,7 +7,8 @@ let loginModal = document.querySelector('#loginModal')
 let loginSignupLink = document.querySelector('#login-signup-link')
 let loginForm = document.querySelector('#login-form')
 let topPage = 0;
-
+let genrePages = []
+const animeContainer = document.querySelector('.anime-container')
 
 // closeBtn.onclick = function(){
 //     animeModal.style.display = "none";
@@ -122,25 +123,20 @@ if (form) {
 
 async function generateAnimeFromSearch(e) {
     e.preventDefault()
-    const searchResults = document.querySelector('.search-results')
     let text = document.querySelector('#query').value;
     let data = await API.getAnimeBySearch(text)
     cleanSearchResults()
     document.querySelector('#query').textContent = ''
-    generateAnime(searchResults, data)
+    generateAnime(animeContainer, data)
 
 }
 
 //Handling search for anime based on a recommendation from another
 
-async function generateAnimeFromRecommendation() {
-    let res = await Anime.getAnimeFromRecommendation()
-    const searchResults = document.querySelector('.search-results')
-    searchResults.innerHTML = '';
-    let row = document.createElement('div')
-    row.innerHTML = `<h3>Anime for You</h3>`
-    searchResults.append(row)
-    generateAnime(row, res)
+async function generateAnimeFromRecommendation(id) {
+    let res = await Anime.getAnimeFromRecommendation(id)
+    cleanSearchResults()
+    generateAnime(animeContainer, res)
 }
 
 //Function for liking/unliking genres
@@ -197,13 +193,16 @@ function createMoreResultsBtn(data, id) {
 }
 
 async function generateAnimeFromSpecificGenre(genre_id) {
+
     let res = await Genre.getAnimeFromSpecificGenre(genre_id)
-    let row = document.createElement('div')
-    row.classList.add('row')
-    row.innerHTML = `<h6>${res.genre.name}</h6>`
-    document.querySelector('.container').append(row)
-    generateAnime(row, res.anime)
-    createMoreResultsBtn('genre', genre_id)
+    if(genrePages.includes(res.page)){
+        removeResultsButton()
+    } else {
+        genrePages.push(res.page)
+        generateAnime(animeContainer, res.anime)
+        createMoreResultsBtn('genre', genre_id)
+    }
+
 
 }
 
@@ -211,8 +210,7 @@ async function generateAnimeFromSpecificGenre(genre_id) {
 async function generateAnimeFromUpcomming() {
     cleanSearchResults()
     let res = await API.getUpcomingAnime()
-    let searchResults = document.querySelector('.search-results')
-    generateAnime(searchResults, res)
+    generateAnime(animeContainer, res)
 }
 
 
@@ -228,6 +226,19 @@ async function generateRecommendedAnimeFromGenre() {
 
     }
 
+}
+
+async function generateDedicatedAnimeData(id){
+    let res = await API.getDedicatedAnimeData(id)
+    let html = Anime.createDedicatedData(res)
+    animeContainer.innerHTML = html
+    let genreList = document.querySelector('.anime-modal__data--genres')
+        for (let i = 0; i < res.genres.length; i++) {
+            let genre = await Genre.createGenreButton(res.genres[i])
+            genreList.append(genre)
+
+        }
+    
 }
 //liking/unliking anime
 async function handleAnimeClicks(e) {
@@ -357,8 +368,7 @@ if (document.querySelector('#seasonForm')) {
 
 async function generateAnimeFromSeason(year, season) {
     let res = await API.getAnimeFromSeason(year, season)
-    let searchResults = document.querySelector('.search-results')
-    generateAnime(searchResults, res)
+    generateAnime(animeContainer, res)
 }
 
 if (document.querySelector('#idForm')) {
@@ -375,8 +385,7 @@ async function generateTopAnime(subtype) {
     topPage++
     let res = await API.getTopAnime(subtype, topPage)
     if (res !== "page not found") {
-        searchResults = document.querySelector('.search-results')
-        generateAnime(searchResults, res)
+        generateAnime(animeContainer, res)
         createMoreResultsBtn(subtype, 'top')
     } else {
         removeResultsButton()
@@ -390,11 +399,7 @@ if (document.querySelector('#day-of-week')) {
         e.preventDefault()
         cleanSearchResults()
         let res = await API.getAnimeByDay()
-        let row = document.createElement('div')
-        row.classList.add('row')
-        row.innerHTML = `<h3>Anime you can watch today!</h3>`
-        document.querySelector('.search-results').append(row)
-        generateAnime(row, res)
+        generateAnime(animeContainer, res)
     })
 
 
@@ -430,7 +435,7 @@ function generateAnime(div, data) {
 }
 
 function cleanSearchResults() {
-    document.querySelector('.search-results').innerHTML = ''
+    animeContainer.innerHTML = ''
 }
 
 function removeResultsButton() {

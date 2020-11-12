@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, LikedAnime, WishListAnime, UserGenre
 from forms import UserForm
-from jikan import genres, get_anime_from_genre, search_for_specific_anime, get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week
+from jikan import genres, get_anime_from_genre, search_for_specific_anime, get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week, get_dedicated_anime_data
 from sqlalchemy.exc import IntegrityError
 from pdf import create_pdf, delete_pdf
 from random import sample
@@ -279,10 +279,10 @@ def recommendation_by_anime():
         liked = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
         try:
-            id = request.json['mal_id']
+            id = request.args['mal_id']
             res = get_recommendations_by_anime(id, liked, wished)
             return jsonify(res)
-        except TypeError:
+        except KeyError:
             if liked:
                 id = sample(liked, 1)[0]
                 res = get_recommendations_by_anime(
@@ -293,10 +293,10 @@ def recommendation_by_anime():
                 return jsonify(res)
     else:
         try:
-            id = request.json['mal_id']
+            id = request.args['mal_id']
             res = get_recommendations_by_anime(id)
             return jsonify(res)
-        except TypeError:
+        except KeyError:
             res = get_recommendations_by_anime()
             return jsonify(res)
 
@@ -425,3 +425,34 @@ def create_wishlist_pdf():
 
     else:
         return "no logged in user"
+
+@app.route('/anime/<int:mal_id>')
+def show_specific_anime(mal_id):
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        liked = True if mal_id in likes else False
+        wished = True if mal_id in wished else False
+        return render_template('specific_anime.html', liked=liked, wished=wished, mal_id=mal_id)
+    else:
+        return render_template('specific_anime.html', mal_id=mal_id)
+@app.route('/api/anime/dedicated')
+def get_all_anime_data():
+    mal_id = request.args["mal_id"]
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        res = get_dedicated_anime_data(mal_id,likes,wished)
+        return jsonify(res)
+    else:
+        res = get_dedicated_anime_data(mal_id)
+        return jsonify(res)
+
+@app.route('/anime/recommendations/<int:mal_id>')
+def show_recommendations_for_anime(mal_id):
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        return render_template('anime-recommendations.html', likes=likes, wished=wished, mal_id=mal_id)
+    else:
+        return render_template('anime-recommendations.html', mal_id=mal_id)

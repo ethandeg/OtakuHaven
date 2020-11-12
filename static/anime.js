@@ -34,7 +34,7 @@ class Anime {
     </div>`
     }
 
-    static async createFullData(obj){
+    static createFullData(obj){
         if(obj.trailer_url){
             
             let html = `
@@ -44,6 +44,8 @@ class Anime {
                             <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
                         </div>
                         <div class="anime-modal__data">
+                        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+                        <a href="/anime/${obj.mal_id}" class = "dedicated-link">See full anime page</a>
                             <ul class="anime-modal__data--list">
                                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                                 <li><strong>Status:</strong> ${obj.status}</li>
@@ -74,6 +76,8 @@ class Anime {
                             <img src = "${obj.image_url}" alt = "${obj.title}">
                         </div>
                         <div class="anime-modal__data pt-medium">
+                        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+                        <a href="/anime/${obj.mal_id}" class = "dedicated-link">See full anime page</a>
                             <ul class="anime-modal__data--list">
                                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                                 <li><strong>Status:</strong> ${obj.status}</li>
@@ -96,6 +100,92 @@ class Anime {
             return html
         }
 
+    }
+
+    static createDedicatedData(obj){
+        let producers = obj.producers.join(', ')
+        let licensors = obj.licensors.join(', ')
+        let studios = obj.studios.join(', ')
+        let likeBtnText;
+        let wishBtnText
+        if(obj.liked){
+            likeBtnText = "unlike"
+        } else {
+            likeBtnText = "like"
+        }
+
+        if(obj.wished){
+            wishBtnText = "unwish"
+        } else {
+            wishBtnText = "wish"
+        }
+        if(obj.trailer_url){
+            let html = ` 
+            <div class = "anime-modal__title"><h2 class="anime-modal__hero--title">${obj.title}</h2></div>
+            <div class = "anime-modal__hero">
+            
+            <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+        <div class="anime-modal__data">
+            <ul class="anime-modal__data--list">
+                <li><strong>Episodes:</strong> ${obj.episodes}</li>
+                <li><strong>Status:</strong> ${obj.status}</li>
+                <li><strong>Aired:</strong> ${obj.aired}</li>
+                <li><strong>Duration:</strong> ${obj.duration}</li>
+                <li><strong>Rating:</strong> ${obj.rating}</li>
+                <li><strong>Broadcast:</strong> ${obj.broadcast}</li>
+                <li><strong>Aired:</strong> ${obj.aired}</li>
+                <li><strong>Producers:</strong> ${producers}</li>
+                <li><strong>Licensors:</strong> ${licensors}</li>
+                <li><strong>Studios:</strong> ${studios}</li>
+            </ul>
+            <hr class="divider">
+            <div class="anime-modal__data--synopsis mb-medium">
+                ${obj.synopsis}
+            </div>
+            <div class = "anime-modal__data--genres">
+            <strong>Genres: </strong>
+            </div>
+            <span class = "anime-modal__data--score mb-large"><i class = "fa fa-star" aria-hidden="true"></i>
+                    ${obj.score}</span>
+                    &nbsp;
+            </div>`
+            return html
+        } else {
+            let html = `
+            <div class = "anime-modal__title">
+            <h2 class="anime-modal__hero--title">${obj.title}</h2>
+            </div>
+            <div class = "anime-modal__hero" style = "height: 31rem; width: 25rem;">
+            
+            <img src = "${obj.image_url}" alt = "${obj.title}">
+        </div>
+        <div class="anime-modal__data pt-medium">
+            <ul class="anime-modal__data--list">
+                <li><strong>Episodes:</strong> ${obj.episodes}</li>
+                <li><strong>Status:</strong> ${obj.status}</li>
+                <li><strong>Aired:</strong> ${obj.aired}</li>
+                <li><strong>Duration:</strong> ${obj.duration}</li>
+                <li><strong>Rating:</strong> ${obj.rating}</li>
+                <li><strong>Broadcast:</strong> ${obj.broadcast}</li>
+                <li><strong>Aired:</strong> ${obj.aired}</li>
+                <li><strong>Producers:</strong> ${producers}</li>
+                <li><strong>Licensors:</strong> ${licensors}</li>
+                <li><strong>Studios:</strong> ${studios}</li>
+            </ul>
+            <hr class="divider">
+            <div class="anime-modal__data--synopsis mb-medium">
+                ${obj.synopsis}
+            </div>
+            <div class = "anime-modal__data--genres">
+            <strong>Genres: </strong>
+            </div>
+            <span class = "anime-modal__data--score mb-large"><i class = "fa fa-star" aria-hidden="true"></i>
+                    ${obj.score}</span>
+                    &nbsp;
+            </div>`
+            return html
+        }
     }
 
 
@@ -144,12 +234,10 @@ class Anime {
     }
 
 
-    static async getAnimeFromRecommendation() {
+    static async getAnimeFromRecommendation(mal_id) {
         const results = []
-        if (this.mal_id) {
-            let res = await axios.get('/api/anime/recommend', {
-                "mal_id": Number(this.mal_id)
-            })
+        if (mal_id) {
+            let res = await axios.get(`/api/anime/recommend?mal_id=${mal_id}`)
             for (let i = 0; i < res.data.length; i++) {
                 let anime = new Anime(res.data[i])
                 results.push(anime)

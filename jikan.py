@@ -249,6 +249,7 @@ def get_anime_from_genre(id, likes=[], wished=[]):
     # print(json.dumps(pretty_json, indent=2))
     data = res.json()
     results = {
+        "page": page,
         "genre": None,
         "id": id,
         "anime": []
@@ -289,7 +290,11 @@ def get_full_anime_data(id, likes=[], wished=[]):
     results = {}
     data = res.json()
     # print(json.dumps(data, indent=2))
-    results["title"] = data["title"]
+    
+    if data["title_english"]:
+        results["title"] = data["title_english"]
+    else:
+        results["title"] = data["title"]
     results["mal_id"] = data["mal_id"]
     results["image_url"] = data["image_url"]
     results["trailer_url"] = data["trailer_url"]
@@ -398,4 +403,42 @@ def anime_by_day_of_week(day=today, likes=[], wished=[]):
             "liked": True if result["mal_id"] in likes else False,
             "wished": True if result["mal_id"] in wished else False
         })
+    return results
+
+
+def get_dedicated_anime_data(id, likes=[], wished=[]):
+    res = requests.get(f"{JIKAN_BASE_URL}/anime/{id}")
+    data = res.json()
+    results = {}
+    if data["title_english"]:
+        results["title"] = data["title_english"]
+    else:
+        results["title"] = data["title"]
+    results["mal_id"] = data["mal_id"]
+    results["image_url"] = data["image_url"]
+    results["trailer_url"] = data["trailer_url"]
+    results["episodes"] = data["episodes"]
+    results["status"] = data["status"]
+    results["aired"] = data["aired"]["string"]
+    results["synopsis"] = data["synopsis"]
+    results["score"] = data["score"]
+    results["liked"] = True if data["mal_id"] in likes else False
+    results["wished"] = True if data["mal_id"] in wished else False
+    results["genres"] = []
+    for result in data["genres"]:
+        result = {"mal_id": result["mal_id"], "name": result["name"]}
+        results["genres"].append(result)
+    results["duration"] = data["duration"]
+    results["rating"] = data["rating"]
+    results["producers"] = []
+    for result in data["producers"]:
+        results['producers'].append(result["name"])
+    results["broadcast"] = data["broadcast"]
+    results["studios"] = []
+    for result in data["studios"]:
+        results["studios"].append(result["name"])
+    results["licensors"] = []
+    for result in data["licensors"]:
+        results["licensors"].append(result["name"])
+
     return results

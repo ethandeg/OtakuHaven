@@ -100,4 +100,10 @@ class API {
 
     }
 
+    static async getDedicatedAnimeData(id){
+        let res = await axios.get(`/api/anime/dedicated?mal_id=${id}`)
+        console.log(res.data)
+        return res.data
+    }
+
 }
