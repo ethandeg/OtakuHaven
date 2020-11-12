@@ -176,9 +176,7 @@ def get_anime():
         return jsonify(message="not logged in")
 
 
-@app.route('/test')
-def test():
-    return render_template('test.html')
+
 
 
 @app.route('/anime/like', methods=['POST'])
