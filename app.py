@@ -5,7 +5,7 @@ from forms import UserForm
 from jikan import genres, get_anime_from_genre, search_for_specific_anime, get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week, get_dedicated_anime_data
 from sqlalchemy.exc import IntegrityError
 from pdf import create_pdf, delete_pdf
-from random import sample
+from random import sample, choice
 import os
 
 
@@ -52,7 +52,8 @@ def do_logout():
 def select_genres():
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
-        return render_template('first_time/genres.html', ids=ids, genres=genres)
+        ready = True if len(ids) >= 3 else False
+        return render_template('first_time/genres.html', ids=ids, genres=genres, ready=ready)
     else:
         return redirect('/')
 
@@ -155,7 +156,7 @@ def show_anime():
         return 'no logged in user'
 
 
-@app.route('/anime', methods=['POST'])
+@app.route('/api/getanime/genre')
 def get_anime():
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
@@ -456,3 +457,48 @@ def show_recommendations_for_anime(mal_id):
         return render_template('anime-recommendations.html', likes=likes, wished=wished, mal_id=mal_id)
     else:
         return render_template('anime-recommendations.html', mal_id=mal_id)
+
+
+
+picked = {
+    'anime':[],
+    'genres':[]
+}
+@app.route('/api/anime/recommendations')
+def get_full_recommendations():
+    if g.user:
+        likes = [like.mal_id for like in g.user.liked]
+        wished = [wish.mal_id for wish in g.user.wished]
+        not_picked_likes = [id for id in likes if id not in picked['anime']]
+        genre_ids = [genre.genre_id for genre in g.user.genre]
+        not_picked_genres = [id for id in genre_ids if id not in picked['genres']]
+        recommendations = {
+            'anime': not_picked_likes,
+            'genres': not_picked_genres
+        }
+        keys = [k for k in recommendations if recommendations[k]]
+        try:
+            category = choice(keys)
+        except IndexError:
+            picked['anime'] = []
+            picked['genres'] = []
+            not_picked_likes = [id for id in likes if id not in picked['anime']]
+            not_picked_genres = [id for id in genre_ids if id not in picked['genres']]
+            print(not_picked_likes)
+            print(not_picked_genres)
+            print(picked)
+            return jsonify(message='no more')
+        if category == "anime":
+            mal_id = choice(recommendations['anime'])
+            picked['anime'].append(mal_id)
+            anime = LikedAnime.query.filter_by(mal_id=mal_id).first()
+            title = anime.title
+            res = get_recommendations_by_anime(mal_id, likes, wished)
+            return jsonify(res)
+        elif category == "genres":
+            mal_id = choice(recommendations['genres'])
+            picked['genres'].append(mal_id)
+            res = get_anime_from_genre(mal_id, likes, wished)
+            return jsonify(res)
+    else:
+        return "no logged in user" 

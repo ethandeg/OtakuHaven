@@ -9,6 +9,7 @@ let loginForm = document.querySelector('#login-form')
 let topPage = 0;
 let genrePages = []
 const animeContainer = document.querySelector('.anime-container')
+let genreIds = []
 
 // closeBtn.onclick = function(){
 //     animeModal.style.display = "none";
@@ -113,6 +114,7 @@ if (loginForm) {
 }
 //************************************************************** */
 for (let genreBlock of genreBlocks) {
+    if(genreBlock.dataset.liked == "true"){genreIds.push(Number(genreBlock.dataset.id))}
     genreBlock.addEventListener('click', handleGenreClick)
 }
 //handling search for specific anime
@@ -148,6 +150,8 @@ async function handleGenreClick(e) {
         if (res.status === 201) {
             console.log(`You officially like ${this.dataset.name}`)
             this.dataset.liked = 'true'
+            genreIds.push(Number(this.dataset.id))
+            checkGetStartedToggle()
             e.target.innerHTML = '<i class="fa fa-star" aria-hidden="true"></i> Unlike'
             return res
         }
@@ -160,6 +164,10 @@ async function handleGenreClick(e) {
         let res = await API.unLikeGenre(this.dataset.id)
         if (res.status === 200) {
             console.log(`You don't like ${this.dataset.name}:(`)
+            let index = genreIds.indexOf(Number(this.dataset.id))
+            if(index > -1){genreIds.splice(index,1)}
+            checkGetStartedToggle()
+            console.log(genreIds)
             this.dataset.liked = 'false'
             e.target.innerHTML = '<i class="fa fa-star-o" aria-hidden="true"></i> Like'
         }
@@ -187,6 +195,9 @@ function createMoreResultsBtn(data, id) {
         }
         else if (id === 'top') {
             generateTopAnime(data)
+        }
+        else if(data==='recommendation'){
+            generateAnimeFromGenericRecommendation()
         }
     })
     document.querySelector('.container').append(btn)
@@ -220,8 +231,8 @@ async function generateRecommendedAnimeFromGenre() {
     for (let i = 0; i < res.length; i++) {
         let fullRow = document.createElement('div')
         fullRow.classList.add('full-row')
-        fullRow.innerHTML = `<h6>${usersAnimeFromGenre[i].genre.name}</h6>`
-        document.querySelector('.container').append(fullRow)
+        fullRow.innerHTML = `<h6>${res[i].genre.name}</h6>`
+        animeContainer.append(fullRow)
         generateAnime(fullRow, res[i].anime)
 
     }
@@ -239,6 +250,30 @@ async function generateDedicatedAnimeData(id){
 
         }
     
+}
+
+async function generateAnimeFromGenericRecommendation(){
+    let res = await API.getGenericRecommendation()
+    let fullRow = document.createElement('full-row')
+    console.log(res)
+    if(res.genre){
+        fullRow.innerHTML = `<h3>Because you like ${res.genre.name}</h3>`
+        animeContainer.append(fullRow)
+        generateAnime(fullRow, res.anime)
+        createMoreResultsBtn('recommendation')
+        
+    } 
+    
+    else if(res ==='no more'){
+        removeResultsButton()
+    }
+    
+    else {
+        fullRow.innerHTML = `<h3>Because of an Anime you Like...`
+        animeContainer.append(fullRow)
+        generateAnime(fullRow, res)
+        createMoreResultsBtn('recommendation')
+    }
 }
 //liking/unliking anime
 async function handleAnimeClicks(e) {
@@ -443,4 +478,18 @@ function removeResultsButton() {
     if (moreResultsbtn) {
         moreResultsbtn.remove()
     }
+}
+
+function checkGetStartedToggle(){
+    let nextBtn = document.querySelector('#next-btn')
+        if(nextBtn){
+            if(genreIds.length >= 3){
+                nextBtn.style.display = "inline-block"
+            } else {
+                nextBtn.style.display = "none"
+            }
+        }
+    
+
+    
 }

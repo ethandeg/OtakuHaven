@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {%block title%}Anime{%endblock%}
 {% block content%}
-<div class='container'>
-    <a href="/">Next</a>
+<div class='container'> 
     <h1>Anime for You!</h1>
     <div class="anime-container">
         
     </div>
+    <a href="{{url_for('show_anime')}}" class = "btn btn-medium btn-orange" id = "next-btn">Next</a>
 </div>
 
 

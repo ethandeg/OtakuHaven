@@ -106,4 +106,36 @@ class API {
         return res.data
     }
 
+    static async getGenericRecommendation(){
+        let res = await axios.get('/api/anime/recommendations')
+        if(res.data.genre){
+            let results = {"anime": [],
+                            "genre": null}
+            let genre = new Genre(res.data.id, res.data.genre, true)
+            results.genre = genre
+            for(let i = 0; i < res.data.anime.length; i++){
+                let anime = new Anime(res.data.anime[i])
+                results.anime.push(anime)
+            }
+            console.log(results)
+            return results
+        
+            
+        }
+        
+        else if(res.data.message === "no more"){
+            return res.data.message
+        }
+        
+        else {
+            let results = []
+            for(let i = 0; i < res.data.length; i++){
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        }
+    }
+
 }

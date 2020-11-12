@@ -106,19 +106,8 @@ class Anime {
         let producers = obj.producers.join(', ')
         let licensors = obj.licensors.join(', ')
         let studios = obj.studios.join(', ')
-        let likeBtnText;
-        let wishBtnText
-        if(obj.liked){
-            likeBtnText = "unlike"
-        } else {
-            likeBtnText = "like"
-        }
 
-        if(obj.wished){
-            wishBtnText = "unwish"
-        } else {
-            wishBtnText = "wish"
-        }
+
         if(obj.trailer_url){
             let html = ` 
             <div class = "anime-modal__title"><h2 class="anime-modal__hero--title">${obj.title}</h2></div>
@@ -127,6 +116,7 @@ class Anime {
             <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
         </div>
         <div class="anime-modal__data">
+        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
             <ul class="anime-modal__data--list">
                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                 <li><strong>Status:</strong> ${obj.status}</li>
@@ -161,6 +151,7 @@ class Anime {
             <img src = "${obj.image_url}" alt = "${obj.title}">
         </div>
         <div class="anime-modal__data pt-medium">
+        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
             <ul class="anime-modal__data--list">
                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                 <li><strong>Status:</strong> ${obj.status}</li>
@@ -261,7 +252,7 @@ class Anime {
 
     static async getAnimeRecommendationsFromGenre() {
         const results = []
-        let res = await axios.post('/anime')
+        let res = await axios.get('/api/getanime/genre')
         let data = res.data
         console.log(data)
         for (let i = 0; i < data.length; i++) {
