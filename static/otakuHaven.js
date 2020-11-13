@@ -10,6 +10,12 @@ let topPage = 0;
 let genrePages = []
 const animeContainer = document.querySelector('.anime-container')
 let genreIds = []
+let mainNav = document.getElementById('js-menu');
+let navBarToggle = document.getElementById('js-navbar-toggle');
+
+navBarToggle.addEventListener('click', function () {
+  mainNav.classList.toggle('active');
+});
 
 // closeBtn.onclick = function(){
 //     animeModal.style.display = "none";
@@ -98,6 +104,7 @@ if (loginForm) {
             }
             if (res.status === 200) {
                 loginModal.style.display = "none"
+                ChangeNavBarOnLogin()
             }
         } else {
             let res = await axios.post('/signup', {
@@ -108,6 +115,7 @@ if (loginForm) {
             if (res.status === 200) {
                 loginModal.style.display = "none"
                 console.log(res)
+                ChangeNavBarOnLogin()
             }
         }
     })
@@ -492,4 +500,35 @@ function checkGetStartedToggle(){
     
 
     
+}
+
+
+function ChangeNavBarOnLogin(){
+    let menu = document.querySelector('#js-menu')
+    let signup = document.querySelector('#nav-signup')
+    let login = document.querySelector('#nav-login')
+    let wishLink = document.createElement('a')
+    let likeLink = document.createElement('a')
+    let logoutLink = document.createElement('a')
+    let wishli = document.createElement('li')
+    let likeli = document.createElement('li')
+    let logoutli = document.createElement('li')
+    wishLink.classList.add('nav-links')
+    likeLink.classList.add('nav-links')
+    logoutLink.classList.add('nav-links')
+    wishLink.setAttribute('href', '/user/wished')
+    likeLink.setAttribute('href', '/user/liked')
+    logoutLink.setAttribute('href', '/logout')
+    wishLink.textContent = "Wishlist Anime"
+    likeLink.textContent = "Liked Anime"
+    logoutLink.textContent = "Logout"
+    signup.parentElement.remove()
+    login.parentElement.remove()
+    likeli.append(likeLink)
+    wishli.append(wishLink)
+    logoutli.append(logoutLink)
+    menu.append(likeli)
+    menu.append(wishli)
+    menu.append(logoutli)
+
 }

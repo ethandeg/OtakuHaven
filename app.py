@@ -8,7 +8,10 @@ from pdf import create_pdf, delete_pdf
 from random import sample, choice
 import os
 
-
+picked = {
+    'anime':[],
+    'genres':[]
+}
 CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
@@ -458,10 +461,7 @@ def show_recommendations_for_anime(mal_id):
 
 
 
-picked = {
-    'anime':[],
-    'genres':[]
-}
+
 @app.route('/api/anime/recommendations')
 def get_full_recommendations():
     if g.user:

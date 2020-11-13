@@ -3,11 +3,13 @@
 {% block content%}
 <div class="container">
 <h1>See What {{g.user.username}} Likes!</h1>
+<div class="anime-container">
 {% for like in g.user.liked %}
 {% if like.mal_id in wished %}
-<div class="anime-container">
-        data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"liked":true,"wished":true}'>
 
+        
+    <div class="anime-block"
+        data-anime='{"title":"{{like.title}}","image_url":"{{like.image_url}}","mal_id":{{like.mal_id}},"liked":true,"wished":true}'>
         <div class="anime-block__image">
             <img src="{{like.image_url}}" alt="{{like.title}}">
         </div>
