@@ -87,6 +87,66 @@
 
     {% block content %}{% endblock %}
 
+    <footer class="footer-distributed">
+
+        <div class="footer-left">
+      <img src="img/logo.png">
+            <h3>OtakuHaven</h3>
+
+            <p class="footer-links" id = "footer-links">
+                <a href="/">Home</a>
+                |
+                <a href="/genres">Genres</a>
+                |
+                <a href="/anime">Recommendations</a>
+                <span class = "footer-remove">|</span>
+                {% if g.user %}
+                <a href="/user/liked">Liked Anime</a>
+                |
+                <a href="/user/wished">Wishlist Anime</a>
+                |
+                <a href="/logout">Logout</a>
+                {% else %}
+                <a href="/login" id = 'footer-login'>Login</a>
+                |
+                <a href="/signup" id = 'footer-signup'>Signup</a>
+                {% endif %}
+            </p>
+
+            <p class="footer-company-name">© 2020 Ethan Degenhardt</p>
+        </div>
+
+        <div class="footer-center">
+            <div>
+                <i class="fa fa-map-marker"></i>
+                  <p><span>3401 Hiram St., #A</span>
+                    Saint Charles, MO 63376</p>
+            </div>
+
+            <div>
+                <i class="fa fa-phone"></i>
+                <p>(636) 373 - 3435</p>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <p><a href="mailto:ethandeg1996@gmail.com">ethandeg1996@gmail.com</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <p class="footer-company-about">
+                <span>About OtakuHaven</span>
+                OtakuHaven was created by Ethan Degenhardt as a passion project due to his love for anime, and desire to always get recommended new ones. 
+                The tech stack:<br>
+                -Backend: Python/Flask, PostGreSQL, and SQLAlchemy<br>
+                -Frontend: Vanilla Javascript, HTML, CSS, and Axios
+                </p>
+            <div class="footer-icons">
+                <a href="https://www.facebook.com/ethan.degenhardt"><i class="fa fa-facebook"></i></a>
+                <a href="https://www.linkedin.com/in/ethandegenhardt/"><i class="fa fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
     <script src="/static/api.js"></script>
     <script src="/static/genre.js"></script>

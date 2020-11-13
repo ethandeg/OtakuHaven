@@ -104,7 +104,7 @@ if (loginForm) {
             }
             if (res.status === 200) {
                 loginModal.style.display = "none"
-                ChangeNavBarOnLogin()
+                changeNavBarAndFooterOnLogin()
             }
         } else {
             let res = await axios.post('/signup', {
@@ -503,7 +503,8 @@ function checkGetStartedToggle(){
 }
 
 
-function ChangeNavBarOnLogin(){
+function changeNavBarAndFooterOnLogin(){
+    let footerLinks = document.querySelector('#footer-links')
     let menu = document.querySelector('#js-menu')
     let signup = document.querySelector('#nav-signup')
     let login = document.querySelector('#nav-login')
@@ -513,6 +514,11 @@ function ChangeNavBarOnLogin(){
     let wishli = document.createElement('li')
     let likeli = document.createElement('li')
     let logoutli = document.createElement('li')
+    let footerLogin = document.querySelector('#footer-login')
+    let footerSignup = document.querySelector('#footer-signup')
+    let footLike = document.createElement('a')
+    let footWish = document.createElement('a')
+    let footLogout = document.createElement('a')
     wishLink.classList.add('nav-links')
     likeLink.classList.add('nav-links')
     logoutLink.classList.add('nav-links')
@@ -530,5 +536,17 @@ function ChangeNavBarOnLogin(){
     menu.append(likeli)
     menu.append(wishli)
     menu.append(logoutli)
+    footLike.setAttribute('href', "/user/liked")
+    footLike.innerHTML = "Liked Anime |&nbsp"
+    footWish.setAttribute('href', "/user/wished")
+    footWish.textContent = " Wishlist Anime |"
+    footLogout.setAttribute('href', "/logout")
+    footLogout.textContent = ' Logout'
+    footerLogin.remove()
+    footerSignup.remove()
+    footerLinks.append(footLike)
+    footerLinks.append(footWish)
+    footerLinks.append(footLogout)
+    document.querySelector('.footer-remove').remove()
 
 }
