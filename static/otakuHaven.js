@@ -17,11 +17,7 @@ navBarToggle.addEventListener('click', function () {
   mainNav.classList.toggle('active');
 });
 
-// closeBtn.onclick = function(){
-//     animeModal.style.display = "none";
-//     loginModal.style.display = "none";
-//     // modal.removeEventListener("click", handleAnimeClicks)
-// }
+
 for (let close of closeBtn) {
     close.addEventListener('click', function (e) {
         animeModal.style.display = "none";
@@ -40,7 +36,6 @@ window.onclick = function (e) {
         if (loginModal) {
             loginModal.style.display = "none";
         }
-        // modal.removeEventListener("click", handleAnimeClicks)
     }
 }
 //************************* */
