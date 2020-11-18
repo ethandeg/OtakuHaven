@@ -1,14 +1,20 @@
+{% extends 'base.html' %}
+{%block title%}Sign up{%endblock%}
+{% block content%}
+<div class="container">
 <h1>Signup</h1>
-<form action="{{ url_for('sign_up_user') }}" method= 'POST'> 
+<form action="{{ url_for('signup_user') }}" method= 'POST'> 
 {{form.hidden_tag()}}
 {% for field in form %}
     {%if field.widget.input_type != 'hidden' %}
     {{field.label}}
     {{field(class_='form-control')}}
-    {%else%}
-    {{field}}
+    {% for error in field.errors %}
+    <p class = "errors">{{ error }}</p>
+    {% endfor %}
     {%endif%}
     {% endfor %}
     <button>Sign Up</button>
 </form>
-
+</div>
+{% endblock %}

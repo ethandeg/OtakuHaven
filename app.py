@@ -83,9 +83,29 @@ def logout():
     do_logout()
     return redirect('/')
 
-
 @app.route('/signup', methods=['GET', 'POST'])
-def sign_up_user():
+def signup_user():
+    form = UserForm()
+    if form.validate_on_submit():
+        try:
+            user = User.signup(
+                username=form.username.data,
+                password=form.password.data,
+            )
+            db.session.commit()
+        except IntegrityError:
+            flash("Username already taken", "danger")
+            return redirect('/signup')
+
+        do_login(user)
+
+        return redirect('/')
+    else:
+        return render_template('signup.html', form=form)
+
+
+@app.route('/popup/signup', methods=['POST'])
+def sign_up_user_from_popup():
     form = UserForm()
     if form.validate_on_submit():
         try:
@@ -97,18 +117,18 @@ def sign_up_user():
 
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return jsonify(message="Username already taken")
+            return jsonify(error="Username already taken")
 
         do_login(user)
 
         return jsonify(message="You are now signed up")
     else:
-        return render_template('signup.html', form=form)
+        # return render_template('signup.html', form=form)
+        return jsonify(error="Username must be less than 30 characters and Password must be between 4-50 characters")
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login_user():
-
+@app.route('/popup/login', methods=['POST'])
+def login_user_from_popup():
     form = UserForm()
 
     if form.validate_on_submit():
@@ -123,11 +143,30 @@ def login_user():
             info["genres"] = [genre.genre_id for genre in user.genre]
             flash(f"Hello, {user.username}!", "success")
             return jsonify(info)
+        else:
+            return jsonify(error="Invalid Username or Password")
 
-        flash("Invalid credentials.", 'danger')
+    #     flash("Invalid credentials.", 'danger')
 
+    # return render_template('login.html', form=form)
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login_user():
+    form= UserForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(form.username.data, form.password.data)
+
+        if user:
+            do_login(user)
+            flash(f"Hello, {user.username}!", "success")
+            return redirect('/')
+        else:
+            flash("Invalid login credentials")
+            return redirect('/login')
+    
     return render_template('login.html', form=form)
-
 
 @app.route('/categories/liked', methods=['POST'])
 def add_liked_categories():

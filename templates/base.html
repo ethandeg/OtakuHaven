@@ -65,6 +65,8 @@
         </div>
     </div>
     {% if g.form %}
+    {% if request.path != "/login"%}
+    {% if request.path != "/signup"%}
     <div class="modal" id="loginModal">
 
         <div class="login-modal-content">
@@ -72,6 +74,7 @@
             <div class="modal-form">
                 <h3 class='login-title' id='login-title'>Login</h3>
                 <form action="{{ url_for('login_user') }}" id='login-form' method='POST' data-type="login">
+                    <span class="errors"></span>
                     {{g.form.hidden_tag()}}
                     {% for field in g.form %}
                     {%if field.widget.input_type != 'hidden' %}
@@ -87,8 +90,12 @@
         </div>
     </div>
     {% endif %}
+    {% endif %}
+    {% endif %}
 
-
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
 
     {% block content %}{% endblock %}
 

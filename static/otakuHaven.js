@@ -136,12 +136,16 @@ if (loginForm) {
     loginForm.addEventListener('submit', async function (e) {
         e.preventDefault()
         if (loginForm.dataset.type === 'login') {
-            let res = await axios.post('/login', {
+            let res = await axios.post('/popup/login', {
                 "username": document.querySelector('#username').value,
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
             console.log(res)
+            if(res.data.error){
+                document.querySelector(".errors").textContent = res.data.error
+                return
+            }
             let animeBlocks = document.querySelectorAll('.anime-block')
             if (animeBlocks) {
                 for (animeBlock of animeBlocks) {
@@ -176,11 +180,15 @@ if (loginForm) {
                 changeNavBarAndFooterOnLogin()
             }
         } else {
-            let res = await axios.post('/signup', {
+            let res = await axios.post('/popup/signup', {
                 "username": document.querySelector('#username').value,
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
+            if(res.data.error){
+                document.querySelector(".errors").textContent = res.data.error
+                return
+            }
             if (res.status === 200) {
                 loginModal.style.display = "none"
                 console.log(res)

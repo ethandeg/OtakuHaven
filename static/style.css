@@ -485,6 +485,11 @@ margin-right: 1rem;
     margin-top: 2rem;
 }
 
+.errors {
+	color: red;
+	font-size: 1.2rem;
+}
+
 /* navbar */
 .navbar {
   z-index: 1;

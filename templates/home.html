@@ -39,7 +39,13 @@
 {% endblock %}
 
 {% block script %}
+{% if g.user %}
 <script>
     generateAnimeFromRecommendation()
 </script>
+{% else %}
+<script>
+    generateTopAnime('airing')
+</script>
+{% endif %}
 {% endblock %}
