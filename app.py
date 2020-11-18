@@ -58,7 +58,8 @@ def select_genres():
         ready = True if len(ids) >= 3 else False
         return render_template('first_time/genres.html', ids=ids, genres=genres, ready=ready)
     else:
-        return redirect('/')
+        flash("You need to be logged in to do that", "danger")
+        return redirect('/login')
 
 
 @app.route('/getstarted/anime')
@@ -67,7 +68,8 @@ def select_anime():
         likes = [like.mal_id for like in g.user.liked]
         return render_template('first_time/anime.html', likes=likes)
     else:
-        return redirect('/')
+        flash("You need to be logged in to do that", "danger")
+        return redirect('/login')
 
 
 @app.route('/')

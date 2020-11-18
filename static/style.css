@@ -31,7 +31,10 @@ margin-right: 1rem;
 }
 
 .container {
-  margin: 10%;
+  min-height: 100vh;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 3%;
 }
 
 
@@ -398,497 +401,86 @@ margin-right: 1rem;
     right: 5%;
     top: 90%;
   }
-/* navbar */
-.navbar {
-  z-index: 1;
-  position: fixed;
-  top: 0%;
-  width: 100%;
-  font-size: 1.8rem;
-  background-image: linear-gradient(260deg, #2376ae 0%, #c16ecf 100%);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 10px;
-}
 
-.main-nav {
-  list-style-type: none;
-  display: none;
-}
-
-.nav-links,
-.logo {
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.main-nav li {
-  text-align: center;
-  margin: 1.5rem auto;
-}
-
-.logo {
-  display: inline-block;
-  font-size: 2.2rem;
-  margin-top: 1rem;
-  margin-left: 2rem;
-}
-
-.navbar-toggle {
-  position: absolute;
-  top: 1rem;
-  right: 2rem;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 2.4rem;
-}
-
-.active {
-  display: block;
-}
-
-@media screen and (min-width: 968px) {
-  .navbar {
-      display: flex;
-      justify-content: space-between;
-      padding-bottom: 0;
-      height: 7rem;
-      align-items: center;
-  }
-
-  .main-nav {
-      display: flex;
-      margin-right: 3rem;
-      flex-direction: row;
-      justify-content: flex-end;
-  }
-
-  .main-nav li {
-      margin: 0;
-  }
-
-  .nav-links {
-      margin-left: 4rem;
-  }
-
-  .logo {
-      margin-top: 0;
-  }
-
-  .navbar-toggle {
-      display: none;
-  }
-
-  .logo:hover,
-  .nav-links:hover {
-      color: rgba(255, 255, 255, 1);
-  }
-}
-
-/* end nav bar */
-
-
-/* FOOTER */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit;
-
-}
-
-html {
-  font-size : 62.5%;
-}
-
-body{
-  font-family: 'Roboto', sans-serif;
-  box-sizing: border-box;
-}
-
-.mb-large {
-  margin-bottom: 10rem;
-}
-
-.mb-medium {
-  margin-bottom: 5rem;
-}
-.mx-small {
-margin-left: 1rem;
-margin-right: 1rem;
-}
-
-.pt-medium {
-  padding-top: 5rem;
-}
-
-.container {
-  margin: 10%;
-}
-
-
-.genre-block {
-  display: inline-block;
-  position: relative;
-  height: 30rem;
-  width: 42rem;
-  margin: 3rem;
-  border: solid black .8px;
-  border-radius: 1rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 .6rem 2rem 0 rgba(0, 0, 0, 0.19);
-} 
-
-.genre-block__title {
-  height: 60%;
-  background-color: rgba(0,0,0,.9);
-  font-size: 2.3rem;
-  text-align: center;
-  padding-top: 15%
-}
-
-.genre-block__title--title {
-  font-weight: 100;
-  color: white;
-  text-transform: uppercase;
-
-}
-
-.genre-block__footer {
-  height: 40%;
-  position: absolute;
-  left: 40%;
-  top: 80%;
-  font-size: 1.6rem;
-  width: 100%;
-}
-
-.btn-primary-outline {
-  display: block;
-  color: blue;
-  background-color: white;
-  border: 1px solid blue;
-  border-radius: 2px;
-  padding: 1rem 3rem;
-  font-size: 1.6rem;
-  float: right;
-
-}
-
-.btn-primary-outline:hover {
-  background-color: blue;
-  color: white;
-  transform: scale(.5rem);
-}
-
-
-.btn-blue {
-  background-color: blue;
-}
-
-.btn-medium {
-  text-align: center;
-  width: 10rem;
-  height: 4rem;
-  font-size: 2rem;
-
-}
-
-.btn-orange {
-  background-color: orange;
-  color: white;
-}
-
-.btn-orange:hover {
-  background-color: white;
-  color: orange;
-  border: solid 1px orange;
-}
-
-
-.anime-block{
-  display: inline-block;
-  position: relative;
-  height: 31rem;
-  width: 50rem;
-  outline: solid 1px black;
-  box-shadow: 10px 10px 8px #888888;
-  background-color: #f0f1f2;
-}
-
-.anime-block__image{
-  display: inline-block;
-  height: 31rem;
-  width: 25rem;
- 
-
-}
-
-.anime-block__image img{
-  height: 100%;
-  width: 100%
-   
-
-}
-
-.anime-block__image img:hover {
-  border: solid 2px blue;
-  cursor: pointer;
-}
-
-.anime-block__title{
-  display: inline-block;
-  position: absolute;
-  width: 25rem;
-  text-align: center;
-  
-
-}
-
-.anime-block__title-header{
-  display: inline;
-  font-size: 2.2rem;
-  text-transform: uppercase;
-}
-.anime-block__buttons{
-  position: absolute;
-  bottom: 5%;
-  left: 60%;
-
-}
-
-.btn {
-  display: inline-block;
-  padding: 1rem .5rem;
-  cursor: pointer;
-  outline: none;
-  border: none;
-  font-size: 1.6rem;
-  border-radius: 2px;
-  
-}
-
-#more-results-button {
-  position: absolute;
-  left: 50%;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
-  transform: translateX(-50%);
-}
-
-/* The Modal (background) */
-
-
-
-/* Modal Content */
-.anime-modal__content,
-.login-modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 2rem;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-/* The Close Button */
-
-
-.btn:link, .btn:visited {
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 1rem;
-  transition: all .2s;
- }
-
- .btn-blue {
-   background-color: #4164e0;
-   color: white;
- }
-
- .btn-blue:hover {
-    background-color: aqua;
- }
-
- .btn-sm {
-   padding: .5rem 1.5rem;
- }
-
-
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-
-.login-modal-content {
-  background-color: #fefefe;
-  margin: 5% auto;
-  padding: 2rem;
-  border: 1px solid #888;
-  width: 60%;
-}
-
-.modal-form {
-  width: 50%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.login-title {
-  font-size: 2.6rem;
-}
-
-.form-control {
-  display: block;
-  margin-bottom: 2rem;
-  width: 100%;
-  height: 3rem;
-  border: none;
-  border-bottom: 1.5px solid green;
-  background-color: #e4e5eb;
-  font-size: 1.6rem;
-  margin-top: 2rem;
-  padding-left: 1rem;
-}
-
-.form-control:focus {
-  outline: none;
-  border-bottom: 2.5px solid green;
-}
-  
-  /* Modal Content/Box */
-  .anime-modal__content {
-    background-color: #fefefe;
-    margin: 5% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-  }
-  .anime-modal__container {
-    padding-bottom: 5rem;
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 2.8rem;
-    font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
+  .search-block {
+    position: relative;
+    display: inline-block;
     cursor: pointer;
+    transition: all .5s;
+    border: 1px solid white;
+    height: 10rem;
+    width: 50%;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 100;
+    box-shadow: 2px 2px 2px 1px rgba(0,0,0,0.2)
   }
 
-  .anime-modal__hero {
-    width: 45rem;
-    height: 30rem;
-    margin: 0 auto;
-    margin-bottom: 10rem;
-    text-align: center;
+  .search-block:hover {
+    box-shadow: 3px 3px 3px 2px rgba(0,0,0,0.3);
+    transform: scaleY(5%);
   }
 
-  .anime-modal__title {
-      text-align: center;
-      width: 100%;
+  .search-block h3 {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+
   }
 
-  .anime-modal__hero iframe{
-    width: 100%;
-    height: 100%;
+  #search-by-name-block{
+
+    background-image: linear-gradient(to right bottom, #f5c242, #f5e642)
   }
 
-  .anime-modal__hero img {
-      width: 100%;
-      height: 100%;
+
+
+  #search-by-season-block {
+    background-image: linear-gradient(to right bottom, #5aa642, #3fe809)
   }
 
-  .anime-modal__hero--title{
-      display: inline;
-      font-size: 3rem;
-      text-transform: uppercase;
-  }
+ #search-by-top-block {
+       background-image: linear-gradient(to right bottom, #ed2c28, #c7a924);
 
-  .anime-modal__data--list {
-      list-style-type: none;
-      font-size: 1.6rem;
-      text-transform: uppercase;
-      line-height: 1.6;
-  }
-  .recommendation-link{
-    position: absolute;
-    text-decoration: none;
-    font-size: 1.6rem;
-    right: 20%
-  }
-.anime-modal__buttons{
-  float: right;
-  margin-top: 2rem;
-  margin-right: 2rem;
+ }
+
+ #day-of-week{
+   background-image: linear-gradient(to right bottom, #2a80c7, #0c33a8);
+ }
+
+ #upcomming-anime{
+   background-image: linear-gradient(to right bottom, #b315b0, #e004a2);
+ } 
+#get-started-link{
+  background-image: linear-gradient(to right bottom, #e84154, #eb001b);
 }
-  .dedicated-link{
-    font-size: 1.6rem;
+
+#get-started-link h3{
+  font-size: 1.7rem;
+
+
+}
+ #get-started-link a{
     text-decoration: none;
-  }
-  .divider {
-    border: 0; 
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    transform: translateX(10%);
-    width: 80%;
-    height: 1px; 
-    background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
-    background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
-    background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
-    background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); 
-  }
-
-  .anime-modal__data--synopsis{
-    margin-left: 5rem;
-    margin-right: 5rem;
-    font-size: 1.6rem;
-  }
-
-  .anime-modal__data--genres {
-    font-size: 1.6rem;
-    text-transform: uppercase;
-  }
-
-
-
-  .anime-modal__data--score {
-    float: right;
-    font-size: 2.6rem;
-  }
-
-  .anime-modal__data--score i {
-    color: #d1d420;
-  }
-  
-  #login-signup-link {
+    color: white;
     display: block;
-    margin-top: 6rem;
-    font-size: 1.6rem;
-  }
 
-  #get-started-link {
-    font-size: 1.6rem;
-    text-decoration: none;
-  }
+ }  
 
-  #next-btn{
-    position: fixed;
-    right: 5%;
-    top: 90%;
-  }
+ .center {
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+
+
+
 /* navbar */
 .navbar {
   z-index: 1;
@@ -896,7 +488,7 @@ margin-right: 1rem;
   top: 0%;
   width: 100%;
   font-size: 1.8rem;
-  background-image: linear-gradient(260deg, #2376ae 0%, #c16ecf 100%);
+  background-image: linear-gradient(260deg, red 0%, orange 100%);
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 10px;
 }
@@ -980,9 +572,11 @@ margin-right: 1rem;
 
 
 
-@media (max-height:800px){
+@media (max-height:880px){
 	footer { position: static; }
 }
+
+
 
 
 .footer-distributed{
@@ -992,7 +586,8 @@ margin-right: 1rem;
 	text-align: left;
 	font: bold 1.6rem sans-serif;
 	padding: 5rem 5rem 6rem 5rem;
-	margin-top: 8rem;
+  margin-top: 8rem;
+  margin-bottom: 0%;
 }
 
 .footer-distributed .footer-left,
@@ -1014,7 +609,6 @@ margin-right: 1rem;
 	margin: 0;
 }
 
-/* The company logo */
 
 .footer-distributed .footer-left img{
 	width: 30%;
@@ -1133,8 +727,6 @@ margin-right: 1rem;
 	margin-bottom: 5px;
 }
 
-/* Here is the code for Responsive Footer */
-/* You can remove below code if you don't want Footer to be responsive */
 
 
 @media (max-width: 880px) {
@@ -1155,3 +747,29 @@ margin-right: 1rem;
 }
 /* 
 end of footer */
+
+/* Scrollbar */
+
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+	border-radius: 10px;
+	background-color: #CCCCCC;
+}
+
+::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #D62929;
+	background-image: -webkit-linear-gradient(90deg,
+											  transparent,
+											  rgba(0, 0, 0, 0.4) 50%,
+											  transparent,
+											  transparent)
+}

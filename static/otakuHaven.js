@@ -1,6 +1,6 @@
 let usersAnimeFromGenre = null
 let genreBlocks = document.querySelectorAll('.genre-block')
-const form = document.querySelector('.form')
+// const form = document.querySelector('#search-by-name-form')
 let animeModal = document.querySelector("#animeModal")
 let closeBtn = document.querySelectorAll('.close')
 let loginModal = document.querySelector('#loginModal')
@@ -12,9 +12,13 @@ const animeContainer = document.querySelector('.anime-container')
 let genreIds = []
 let mainNav = document.getElementById('js-menu');
 let navBarToggle = document.getElementById('js-navbar-toggle');
+let bySearch = document.querySelector('#search-by-name-block');
+let formBlock = document.querySelector('#form-block')
+let bySeason = document.querySelector('#search-by-season-block')
+let byTop = document.querySelector('#search-by-top-block')
 
 navBarToggle.addEventListener('click', function () {
-  mainNav.classList.toggle('active');
+    mainNav.classList.toggle('active');
 });
 
 
@@ -38,8 +42,78 @@ window.onclick = function (e) {
         }
     }
 }
+
+if (bySearch) {
+    bySearch.addEventListener('click', function (e) {
+        let html = `<form action="anime/search" class = "form" id="search-by-name-form">
+                        <input type="text" name="query" id="query">
+                        <button>Search</button>`
+        console.log(html)
+        formBlock.innerHTML = html
+        let form = document.querySelector('#search-by-name-form')
+        form.addEventListener('submit', generateAnimeFromSearch)
+    })
+}
+
+if (bySeason) {
+    bySeason.addEventListener('click', function (e) {
+        let html = `<form id ="seasonForm">
+                        <select name ="year" id ="year"></select>
+                        <select name = "season" id = "season"></select>
+                        <button>Search</button>`
+        formBlock.innerHTML = html
+        let form = document.querySelector('#seasonForm')
+        const yearInput = document.querySelector('#year')
+        const seasonInput = document.querySelector('#season')
+        fillYears(yearInput)
+        fillSeasons(seasonInput, yearInput)
+        yearInput.addEventListener('change', async function () {
+            fillSeasons(seasonInput, yearInput)
+        })
+
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault()
+            cleanSearchResults()
+            generateAnimeFromSeason(yearInput.value, seasonInput.value)
+        })
+    })
+
+}
+
+if (byTop) {
+    byTop.addEventListener('click', function () {
+        let html = `    <form id="idForm">
+        <select name="subtype" id="subtype">
+            <option value="airing">Airing</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="tv">TV</option>
+            <option value="movie">Movie</option>
+            <option value="ova">OVA</option>
+            <option value="special">Special</option>
+            <option value="bypopularity">By Popularity</option>
+            <option value="favorite">Favorite</option>
+        </select>
+        <button>Search</button>
+    </form>`
+
+        formBlock.innerHTML = html;
+        let form = document.querySelector('#idForm')
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault()
+            let typeValue = document.querySelector('#subtype').value;
+            cleanSearchResults()
+            topPage = 0;
+            generateTopAnime(typeValue)
+
+
+        })
+    })
+}
+
+
 //************************* */
-//LOGIN LOGICE FOR SINGUPING/LOGGING IN AND UPDATING ANIME/GENRES
+//LOGIN LOGIC FOR SINGUPING/LOGGING IN AND UPDATING ANIME/GENRES
 if (loginSignupLink) {
     loginSignupLink.addEventListener('click', function (e) {
         e.preventDefault()
@@ -117,13 +191,11 @@ if (loginForm) {
 }
 //************************************************************** */
 for (let genreBlock of genreBlocks) {
-    if(genreBlock.dataset.liked == "true"){genreIds.push(Number(genreBlock.dataset.id))}
+    if (genreBlock.dataset.liked == "true") { genreIds.push(Number(genreBlock.dataset.id)) }
     genreBlock.addEventListener('click', handleGenreClick)
 }
 //handling search for specific anime
-if (form) {
-    form.addEventListener('submit', generateAnimeFromSearch)
-}
+
 
 
 async function generateAnimeFromSearch(e) {
@@ -141,7 +213,12 @@ async function generateAnimeFromSearch(e) {
 async function generateAnimeFromRecommendation(id) {
     let res = await Anime.getAnimeFromRecommendation(id)
     cleanSearchResults()
-    generateAnime(animeContainer, res)
+    if(res.length > 0){
+        generateAnime(animeContainer, res)
+    } else {
+        animeContainer.innerHTML = "<h3>No recommendations for this Anime</h3>"
+    }
+    
 }
 
 //Function for liking/unliking genres
@@ -168,7 +245,7 @@ async function handleGenreClick(e) {
         if (res.status === 200) {
             console.log(`You don't like ${this.dataset.name}:(`)
             let index = genreIds.indexOf(Number(this.dataset.id))
-            if(index > -1){genreIds.splice(index,1)}
+            if (index > -1) { genreIds.splice(index, 1) }
             checkGetStartedToggle()
             console.log(genreIds)
             this.dataset.liked = 'false'
@@ -199,7 +276,7 @@ function createMoreResultsBtn(data, id) {
         else if (id === 'top') {
             generateTopAnime(data)
         }
-        else if(data==='recommendation'){
+        else if (data === 'recommendation') {
             generateAnimeFromGenericRecommendation()
         }
     })
@@ -209,7 +286,7 @@ function createMoreResultsBtn(data, id) {
 async function generateAnimeFromSpecificGenre(genre_id) {
 
     let res = await Genre.getAnimeFromSpecificGenre(genre_id)
-    if(genrePages.includes(res.page)){
+    if (genrePages.includes(res.page)) {
         removeResultsButton()
     } else {
         genrePages.push(res.page)
@@ -242,35 +319,40 @@ async function generateRecommendedAnimeFromGenre() {
 
 }
 
-async function generateDedicatedAnimeData(id){
+async function generateDedicatedAnimeData(id) {
     let res = await API.getDedicatedAnimeData(id)
     let html = Anime.createDedicatedData(res)
     animeContainer.innerHTML = html
     let genreList = document.querySelector('.anime-modal__data--genres')
-        for (let i = 0; i < res.genres.length; i++) {
-            let genre = await Genre.createGenreButton(res.genres[i])
-            genreList.append(genre)
+    for (let i = 0; i < res.genres.length; i++) {
+        let genre = await Genre.createGenreButton(res.genres[i])
+        genreList.append(genre)
 
-        }
-    
+    }
+
 }
 
-async function generateAnimeFromGenericRecommendation(){
+async function generateAnimeFromGenericRecommendation() {
     let res = await API.getGenericRecommendation()
     let fullRow = document.createElement('full-row')
     console.log(res)
-    if(res.genre){
+    if (res.genre) {
         fullRow.innerHTML = `<h3>Because you like ${res.genre.name}</h3>`
         animeContainer.append(fullRow)
         generateAnime(fullRow, res.anime)
         createMoreResultsBtn('recommendation')
-        
-    } 
-    
-    else if(res ==='no more'){
+
+    }
+
+    else if (res === 'no more') {
         removeResultsButton()
     }
-    
+    else if(res === "no recommendations for this anime"){
+        fullRow.innerHTML = `<h3>This anime doesn't come with any recommendations...</h3>`
+        animeContainer.append(fullRow)
+        createMoreResultsBtn('recommendation')
+    }
+
     else {
         fullRow.innerHTML = `<h3>Because of an Anime you Like...`
         animeContainer.append(fullRow)
@@ -358,17 +440,16 @@ async function handleAnimeClicks(e) {
 }
 
 
-const yearInput = document.querySelector('#year')
-const seasonInput = document.querySelector('#season')
-async function fillYears() {
+
+async function fillYears(input) {
 
     let res = await API.getSeasonForm()
-    yearInput.addEventListener('change', fillSeasons)
+
     for (let i = 0; i < res.data.length; i++) {
         let option = document.createElement('option')
         option.value = res.data[i].year
         option.textContent = res.data[i].year
-        yearInput.append(option)
+        input.append(option)
 
     }
 
@@ -378,9 +459,9 @@ async function fillYears() {
 
 //Event listener for "change" to year input to run fillSeasons with year being value of input
 
-async function fillSeasons() {
+async function fillSeasons(input, yearInput) {
 
-    seasonInput.innerHTML = '';
+    input.innerHTML = '';
     let res = await API.getSeasonForm()
     for (let i = 0; i < res.data.length; i++) {
         if (res.data[i].year === Number(yearInput.value)) {
@@ -388,7 +469,7 @@ async function fillSeasons() {
                 let option = document.createElement('option')
                 option.value = res.data[i].seasons[j]
                 option.textContent = res.data[i].seasons[j]
-                seasonInput.append(option)
+                input.append(option)
             }
         }
     }
@@ -396,28 +477,28 @@ async function fillSeasons() {
 
 
 
-if (document.querySelector('#seasonForm')) {
-    document.querySelector('#seasonForm').addEventListener('submit', async function (e) {
-        e.preventDefault()
-        cleanSearchResults()
-        generateAnimeFromSeason(yearInput.value, seasonInput.value)
-    })
-}
+// if (document.querySelector('#seasonForm')) {
+//     document.querySelector('#seasonForm').addEventListener('submit', async function (e) {
+//         e.preventDefault()
+//         cleanSearchResults()
+//         generateAnimeFromSeason(yearInput.value, seasonInput.value)
+//     })
+// }
 
 async function generateAnimeFromSeason(year, season) {
     let res = await API.getAnimeFromSeason(year, season)
     generateAnime(animeContainer, res)
 }
 
-if (document.querySelector('#idForm')) {
-    document.querySelector('#idForm').addEventListener('submit', async function (e) {
-        e.preventDefault()
-        const typeValue = document.querySelector('#subtype').value
-        cleanSearchResults()
-        topPage = 0;
-        generateTopAnime(typeValue)
-    })
-}
+// if (document.querySelector('#idForm')) {
+//     document.querySelector('#idForm').addEventListener('submit', async function (e) {
+//         e.preventDefault()
+//         const typeValue = document.querySelector('#subtype').value
+//         cleanSearchResults()
+//         topPage = 0;
+//         generateTopAnime(typeValue)
+//     })
+// }
 
 async function generateTopAnime(subtype) {
     topPage++
@@ -433,8 +514,7 @@ async function generateTopAnime(subtype) {
 
 
 if (document.querySelector('#day-of-week')) {
-    document.querySelector('#day-of-week').addEventListener('click', async function (e) {
-        e.preventDefault()
+    document.querySelector('#day-of-week').addEventListener('click', async function () {
         cleanSearchResults()
         let res = await API.getAnimeByDay()
         generateAnime(animeContainer, res)
@@ -483,22 +563,22 @@ function removeResultsButton() {
     }
 }
 
-function checkGetStartedToggle(){
+function checkGetStartedToggle() {
     let nextBtn = document.querySelector('#next-btn')
-        if(nextBtn){
-            if(genreIds.length >= 3){
-                nextBtn.style.display = "inline-block"
-            } else {
-                nextBtn.style.display = "none"
-            }
+    if (nextBtn) {
+        if (genreIds.length >= 3) {
+            nextBtn.style.display = "inline-block"
+        } else {
+            nextBtn.style.display = "none"
         }
-    
+    }
 
-    
+
+
 }
 
 
-function changeNavBarAndFooterOnLogin(){
+function changeNavBarAndFooterOnLogin() {
     let footerLinks = document.querySelector('#footer-links')
     let menu = document.querySelector('#js-menu')
     let signup = document.querySelector('#nav-signup')

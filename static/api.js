@@ -134,6 +134,9 @@ class API {
                 results.push(anime)
             }
             console.log(results)
+            if(results.length === 0){
+                return "no recommendations for this anime"
+            }
             return results
         }
     }
