@@ -312,7 +312,7 @@ def get_full_anime_data(id, likes=[], wished=[]):
     return results
 
 
-def get_recommendations_by_anime(id=21, likes=[], wished=[]):
+def get_recommendations_by_anime(id=21, likes=[], wished=[], title=None):
     res = requests.get(f'{JIKAN_BASE_URL}/anime/{id}/recommendations')
     results = []
     data = res.json()['recommendations']

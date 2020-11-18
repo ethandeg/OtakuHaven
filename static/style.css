@@ -479,7 +479,11 @@ margin-right: 1rem;
 }
 
 
-
+.full-row{
+    overflow: auto;
+    white-space: nowrap;
+    margin-top: 2rem;
+}
 
 /* navbar */
 .navbar {
@@ -773,3 +777,5 @@ end of footer */
 											  transparent,
 											  transparent)
 }
+
+

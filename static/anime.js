@@ -225,29 +225,7 @@ class Anime {
     }
 
 
-    static async getAnimeFromRecommendation(mal_id) {
-        const results = []
-        if (mal_id) {
-            let res = await axios.get(`/api/anime/recommend?mal_id=${mal_id}`)
-            for (let i = 0; i < res.data.length; i++) {
-                let anime = new Anime(res.data[i])
-                results.push(anime)
-            }
-            console.log(results)
-            return results
-        } else {
-            let res = await axios.get('/api/anime/recommend')
-            for (let i = 0; i < res.data.length; i++) {
-                let anime = new Anime(res.data[i])
-                results.push(anime)
-            }
-            console.log(results)
-            return results
-        }
 
-
-
-    }
 
 
     static async getAnimeRecommendationsFromGenre() {

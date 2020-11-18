@@ -6,16 +6,7 @@ class Genre {
     }
 
 
-    static async getAnimeFromSpecificGenre(genre_id) {
-        let res = await axios.get(`/api/genres/${genre_id}`)
-        let genre = new Genre(res.data.id, res.data.genre)
-        let newObj = { "genre": genre, "anime": [], page: res.data.page}
-        for (let i = 0; i < res.data.anime.length; i++) {
-            let anime = new Anime(res.data.anime[i])
-            newObj.anime.push(anime)
-        }
-        return newObj
-    }
+
 
     create() {
     //     <div class='genre-block' data-id="{{genre_id}}" data-liked = true data-name="{{genre_name}}">
@@ -68,6 +59,24 @@ class Genre {
         link.classList.add('mx-small')
         link.classList.add('mb-small')
         return link
+    }
+
+    static async likeGenre(id) {
+        let res = await axios.post('/categories/liked', {
+            'genre_id': id
+        })
+        return res
+    }
+
+    static async unLikeGenre(id) {
+        let res = await axios({
+            method: 'delete',
+            url: '/categories/unlike',
+            headers: { 'Content-type': 'application/json' },
+            data:
+                { 'genre_id': id }
+        })
+        return res
     }
 
 }

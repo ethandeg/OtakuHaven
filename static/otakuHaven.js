@@ -211,7 +211,7 @@ async function generateAnimeFromSearch(e) {
 //Handling search for anime based on a recommendation from another
 
 async function generateAnimeFromRecommendation(id) {
-    let res = await Anime.getAnimeFromRecommendation(id)
+    let res = await API.getAnimeFromRecommendation(id)
     cleanSearchResults()
     if(res.length > 0){
         generateAnime(animeContainer, res)
@@ -226,7 +226,7 @@ async function handleGenreClick(e) {
     let target = Array.from(e.target.classList)
     //like genre
     if (this.dataset.liked === 'false' && target.includes("like-btn")) {
-        let res = await API.likeGenre(this.dataset.id)
+        let res = await Genre.likeGenre(this.dataset.id)
         if (res.status === 201) {
             console.log(`You officially like ${this.dataset.name}`)
             this.dataset.liked = 'true'
@@ -241,7 +241,7 @@ async function handleGenreClick(e) {
     }
     //unlike genre
     else if (this.dataset.liked === 'true' && target.includes('like-btn')) {
-        let res = await API.unLikeGenre(this.dataset.id)
+        let res = await Genre.unLikeGenre(this.dataset.id)
         if (res.status === 200) {
             console.log(`You don't like ${this.dataset.name}:(`)
             let index = genreIds.indexOf(Number(this.dataset.id))
@@ -285,7 +285,7 @@ function createMoreResultsBtn(data, id) {
 
 async function generateAnimeFromSpecificGenre(genre_id) {
 
-    let res = await Genre.getAnimeFromSpecificGenre(genre_id)
+    let res = await API.getAnimeFromSpecificGenre(genre_id)
     if (genrePages.includes(res.page)) {
         removeResultsButton()
     } else {
@@ -306,12 +306,12 @@ async function generateAnimeFromUpcomming() {
 
 
 async function generateRecommendedAnimeFromGenre() {
-    let res = await Anime.getAnimeRecommendationsFromGenre()
+    let res = await API.getAnimeRecommendationsFromGenre()
 
     for (let i = 0; i < res.length; i++) {
         let fullRow = document.createElement('div')
         fullRow.classList.add('full-row')
-        fullRow.innerHTML = `<h6>${res[i].genre.name}</h6>`
+        fullRow.innerHTML = `<h3>${res[i].genre.name}</h3>`
         animeContainer.append(fullRow)
         generateAnime(fullRow, res[i].anime)
 
@@ -334,7 +334,8 @@ async function generateDedicatedAnimeData(id) {
 
 async function generateAnimeFromGenericRecommendation() {
     let res = await API.getGenericRecommendation()
-    let fullRow = document.createElement('full-row')
+    let fullRow = document.createElement('div')
+    fullRow.classList.add('full-row')
     console.log(res)
     if (res.genre) {
         fullRow.innerHTML = `<h3>Because you like ${res.genre.name}</h3>`
@@ -354,9 +355,9 @@ async function generateAnimeFromGenericRecommendation() {
     }
 
     else {
-        fullRow.innerHTML = `<h3>Because of an Anime you Like...`
+        fullRow.innerHTML = `<h3>Because you like ${res.title}`
         animeContainer.append(fullRow)
-        generateAnime(fullRow, res)
+        generateAnime(fullRow, res.anime)
         createMoreResultsBtn('recommendation')
     }
 }
@@ -624,4 +625,14 @@ function changeNavBarAndFooterOnLogin() {
     footerLinks.append(footLogout)
     document.querySelector('.footer-remove').remove()
 
+}
+
+function createLoader(container){
+    let newDiv = document.createElement('div')
+    newDiv.classList.add('loader')
+    container.append(newDiv)
+}
+
+function removeLoader(div){
+    div.remove()
 }

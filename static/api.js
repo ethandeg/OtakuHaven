@@ -3,22 +3,60 @@ class API {
 
     }
 
-    static async likeGenre(id) {
-        let res = await axios.post('/categories/liked', {
-            'genre_id': id
-        })
-        return res
+    static async getAnimeFromSpecificGenre(genre_id) {
+        let res = await axios.get(`/api/genres/${genre_id}`)
+        let genre = new Genre(res.data.id, res.data.genre)
+        let newObj = { "genre": genre, "anime": [], page: res.data.page}
+        for (let i = 0; i < res.data.anime.length; i++) {
+            let anime = new Anime(res.data.anime[i])
+            newObj.anime.push(anime)
+        }
+        return newObj
     }
 
-    static async unLikeGenre(id) {
-        let res = await axios({
-            method: 'delete',
-            url: '/categories/unlike',
-            headers: { 'Content-type': 'application/json' },
-            data:
-                { 'genre_id': id }
-        })
-        return res
+    static async getAnimeFromRecommendation(mal_id) {
+        const results = []
+        if (mal_id) {
+            let res = await axios.get(`/api/anime/recommend?mal_id=${mal_id}`)
+            for (let i = 0; i < res.data.length; i++) {
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        } else {
+            let res = await axios.get('/api/anime/recommend')
+            for (let i = 0; i < res.data.length; i++) {
+                let anime = new Anime(res.data[i])
+                results.push(anime)
+            }
+            console.log(results)
+            return results
+        }
+
+
+
+    }
+
+    static async getAnimeRecommendationsFromGenre() {
+        const results = []
+        let res = await axios.get('/api/getanime/genre')
+        let data = res.data
+        console.log(data)
+        for (let i = 0; i < data.length; i++) {
+            let obj = { "genre": null, "anime": [] }
+            let genre = new Genre(data[i].id, data[i].genre)
+            obj['genre'] = genre
+            for (let j = 0; j < data[i].anime.length; j++) {
+                let anime = new Anime(data[i].anime[j])
+                obj.anime.push(anime)
+
+            }
+            results.push(obj)
+
+        }
+        console.log(results)
+        return results
     }
 
     static async getAnimeBySearch(query) {
@@ -128,13 +166,14 @@ class API {
         }
         
         else {
-            let results = []
-            for(let i = 0; i < res.data.length; i++){
-                let anime = new Anime(res.data[i])
-                results.push(anime)
+            let results = {title: null, anime: []}
+            results.title = res.data[1]
+            for(let i = 0; i < res.data[0].length; i++){
+                let anime = new Anime(res.data[0][i])
+                results.anime.push(anime)
             }
             console.log(results)
-            if(results.length === 0){
+            if(results.anime.length === 0){
                 return "no recommendations for this anime"
             }
             return results

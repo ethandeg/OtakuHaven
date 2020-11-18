@@ -484,9 +484,6 @@ def get_full_recommendations():
             picked['genres'] = []
             not_picked_likes = [id for id in likes if id not in picked['anime']]
             not_picked_genres = [id for id in genre_ids if id not in picked['genres']]
-            print(not_picked_likes)
-            print(not_picked_genres)
-            print(picked)
             return jsonify(message='no more')
         if category == "anime":
             mal_id = choice(recommendations['anime'])
@@ -494,7 +491,8 @@ def get_full_recommendations():
             anime = LikedAnime.query.filter_by(mal_id=mal_id).first()
             title = anime.title
             res = get_recommendations_by_anime(mal_id, likes, wished)
-            return jsonify(res)
+            print(res,title)
+            return jsonify(res,title)
         elif category == "genres":
             mal_id = choice(recommendations['genres'])
             picked['genres'].append(mal_id)
