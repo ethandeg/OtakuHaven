@@ -53,6 +53,7 @@ def do_logout():
 
 @app.route('/getstarted/genres')
 def select_genres():
+    """Route to like at least 3 genres, and then move on to animes"""
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
         ready = True if len(ids) >= 3 else False
@@ -64,6 +65,7 @@ def select_genres():
 
 @app.route('/getstarted/anime')
 def select_anime():
+    """Route to like anime based off of genres on the get started series"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         return render_template('first_time/anime.html', likes=likes)
@@ -74,6 +76,7 @@ def select_anime():
 
 @app.route('/')
 def show_categories():
+    """Home Route"""
     return render_template('home.html')
 
 
@@ -85,6 +88,7 @@ def logout():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup_user():
+    """Signup New User"""
     form = UserForm()
     if form.validate_on_submit():
         try:
@@ -106,6 +110,7 @@ def signup_user():
 
 @app.route('/popup/signup', methods=['POST'])
 def sign_up_user_from_popup():
+    """Signup when from the modal"""
     form = UserForm()
     if form.validate_on_submit():
         try:
@@ -129,6 +134,7 @@ def sign_up_user_from_popup():
 
 @app.route('/popup/login', methods=['POST'])
 def login_user_from_popup():
+    """Login from the modal"""
     form = UserForm()
 
     if form.validate_on_submit():
@@ -146,13 +152,10 @@ def login_user_from_popup():
         else:
             return jsonify(error="Invalid Username or Password")
 
-    #     flash("Invalid credentials.", 'danger')
-
-    # return render_template('login.html', form=form)
-
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_user():
+    """Login User"""
     form= UserForm()
 
     if form.validate_on_submit():
@@ -170,6 +173,7 @@ def login_user():
 
 @app.route('/categories/liked', methods=['POST'])
 def add_liked_categories():
+    """Route for a user to like a genre"""
     if g.user:
         genre_id = int(request.json['genre_id'])
         liked_genre = UserGenre(user_id=g.user.id, genre_id=genre_id)
@@ -183,6 +187,7 @@ def add_liked_categories():
 
 @app.route('/categories/unlike', methods=['DELETE'])
 def remove_liked_category():
+    """Route for a user to unlike a genre"""
     genre_id = int(request.json['genre_id'])
     unliked_genre = UserGenre.query.filter_by(
         user_id=g.user.id, genre_id=genre_id).first()
@@ -194,14 +199,16 @@ def remove_liked_category():
 
 @app.route('/anime')
 def show_anime():
+    """Ultimate recommendations route"""
     if g.user:
         return render_template('anime.html')
     else:
-        return 'no logged in user'
+        return "no logged in user"
 
 
 @app.route('/api/getanime/genre')
 def get_anime():
+    """Get JSON response for the anime for specific genres"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -225,6 +232,7 @@ def get_anime():
 
 @app.route('/anime/like', methods=['POST'])
 def like_anime():
+    """Route for a user to like an anime"""
     if g.user:
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
@@ -241,6 +249,7 @@ def like_anime():
 
 @app.route('/anime/unlike', methods=['DELETE'])
 def delete_liked_anime():
+    """Route for a user to unlike an anime"""
     if g.user:
         mal_id = int(request.json['mal_id'])
         unliked_anime = LikedAnime.query.filter_by(
@@ -255,6 +264,7 @@ def delete_liked_anime():
 
 @app.route('/anime/wishlist', methods=['POST'])
 def add_anime_to_wishlist():
+    """Route for user to add an anime to their wishlist"""
     if g.user:
         mal_id = int(request.json['mal_id'])
         title = request.json['title']
@@ -271,6 +281,7 @@ def add_anime_to_wishlist():
 
 @app.route('/anime/wishlist', methods=['DELETE'])
 def unwish_anime():
+    """route for user to unwish"""
     if g.user:
         mal_id = int(request.json['mal_id'])
         unwished_anime = WishListAnime.query.filter_by(
@@ -284,6 +295,7 @@ def unwish_anime():
 
 @app.route('/user/liked')
 def show_user_liked_anime():
+    """show user's liked anime"""
     if g.user:
         wished = [wish.mal_id for wish in g.user.wished]
         return render_template('liked.html', wished=wished)
@@ -294,6 +306,7 @@ def show_user_liked_anime():
 
 @app.route('/user/wished')
 def show_user_wished_anime():
+    """show user's wished anime"""
     if g.user:
         liked = [like.mal_id for like in g.user.liked]
         return render_template('wished.html', liked=liked)
@@ -304,6 +317,7 @@ def show_user_wished_anime():
 
 @app.route('/anime/search')
 def search_anime():
+    """Search for a specific anime"""
     query = request.args["query"]
     if g.user:
         liked = [like.mal_id for like in g.user.liked]
@@ -317,7 +331,7 @@ def search_anime():
 
 @app.route('/api/anime/recommend')
 def recommendation_by_anime():
-
+    """JSON response for recommendations of a specific anime"""
     if g.user:
         liked = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -346,6 +360,7 @@ def recommendation_by_anime():
 
 @app.route('/genres')
 def show_genres():
+    """display genres"""
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
         return render_template('genres.html', genres=genres, ids=ids)
@@ -355,6 +370,7 @@ def show_genres():
 
 @app.route('/genres/<int:genre_id>')
 def show_anime_from_genre(genre_id):
+    """display anime for specific genre"""
     genre = [genre['name'] for genre in genres if genre_id == genre['id']]
     if g.user:
         ids = [genre.genre_id for genre in g.user.genre]
@@ -365,6 +381,7 @@ def show_anime_from_genre(genre_id):
 
 @app.route('/api/genres/<int:genre_id>')
 def get_anime_for_one_genre(genre_id):
+    """return json anime for a specific anime, automatically paginates"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -383,6 +400,7 @@ def get_anime_for_one_genre(genre_id):
 
 @app.route('/api/anime/<int:mal_id>')
 def get_data_for_anime(mal_id):
+    """Gets full data for an anime as a json response"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -395,6 +413,7 @@ def get_data_for_anime(mal_id):
 
 @app.route('/api/anime/upcoming')
 def show_upcoming_anime():
+    """JSON response for upcoming anime"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -407,12 +426,14 @@ def show_upcoming_anime():
 
 @app.route('/api/create_season_form')
 def get_season_form():
+    """gets years and seasons form"""
     res = get_years_and_seasons()
     return jsonify(res)
 
 
 @app.route('/api/anime/anime_by_season')
 def get_anime_by_season():
+    """JSON response for anime searched by a specific year and season"""
     year = int(request.args['year'])
     season = request.args['season']
     if g.user:
@@ -427,6 +448,7 @@ def get_anime_by_season():
 
 @app.route('/api/anime/top')
 def get_top_anime():
+    """JSON response for searching top anime"""
     subtype = request.args['subtype']
     page = request.args['page']
     if g.user:
@@ -447,6 +469,7 @@ def get_top_anime():
 
 @app.route('/api/anime/day')
 def get_anime_by_day():
+    """get anime by day of the week JSON"""
     day = request.args.get("day", today)
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
@@ -460,6 +483,7 @@ def get_anime_by_day():
 
 @app.route('/api/createpdf', methods=['POST'])
 def create_wishlist_pdf():
+    """Creates and downloads pdf of user wishlist"""
     if g.user:
         html = request.form['wished-html']
         create_pdf(html, g.user.username)
@@ -471,6 +495,7 @@ def create_wishlist_pdf():
 
 @app.route('/anime/<int:mal_id>')
 def show_specific_anime(mal_id):
+    """show full anime data on page"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
@@ -481,6 +506,7 @@ def show_specific_anime(mal_id):
         return render_template('specific_anime.html', mal_id=mal_id)
 @app.route('/api/anime/dedicated')
 def get_all_anime_data():
+    """get full anime data"""
     mal_id = request.args["mal_id"]
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
@@ -493,18 +519,29 @@ def get_all_anime_data():
 
 @app.route('/anime/recommendations/<int:mal_id>')
 def show_recommendations_for_anime(mal_id):
+    '''page for showing recommendations for specific anime'''
+    try:
+        title = request.args['title']
+    except:
+        return redirect(f"/anime/recommendations/{mal_id}?title=This%20Anime")
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        return render_template('anime-recommendations.html', likes=likes, wished=wished, mal_id=mal_id)
+        if title:
+            return render_template('anime-recommendations.html', likes=likes, wished=wished, mal_id=mal_id,title=title)
+        else:
+            return render_template('anime-recommendations.html','anime-recommendations.html', likes=likes, wished=wished, mal_id=mal_id)
     else:
-        return render_template('anime-recommendations.html', mal_id=mal_id)
-
+        if title:
+            return render_template('anime-recommendations.html', mal_id=mal_id,title=title)
+        else:
+            return render_template('anime-recommendations.html', mal_id=mal_id)
 
 
 
 @app.route('/api/anime/recommendations')
 def get_full_recommendations():
+    """This route gives a recommendation response based off of liked animes or genres"""
     if g.user:
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]

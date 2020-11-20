@@ -145,7 +145,7 @@ class API {
     }
 
     static async getGenericRecommendation(){
-        let res = await axios.get('/api/anime/recommendations')
+        let res = await axios.get(`/api/anime/recommendations`)
         if(res.data.genre){
             let results = {"anime": [],
                             "genre": null}

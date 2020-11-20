@@ -192,7 +192,7 @@ if (loginForm) {
             if (res.status === 200) {
                 loginModal.style.display = "none"
                 console.log(res)
-                ChangeNavBarOnLogin()
+                changeNavBarAndFooterOnLogin()
             }
         }
     })
@@ -330,6 +330,7 @@ async function generateRecommendedAnimeFromGenre() {
 async function generateDedicatedAnimeData(id) {
     let res = await API.getDedicatedAnimeData(id)
     let html = Anime.createDedicatedData(res)
+    document.querySelector('.dedicated-anime').textContent = res.title
     animeContainer.innerHTML = html
     let genreList = document.querySelector('.anime-modal__data--genres')
     for (let i = 0; i < res.genres.length; i++) {
@@ -381,7 +382,7 @@ async function handleAnimeClicks(e) {
                 data.liked = true
                 anime.liked = true
                 this.dataset.anime = JSON.stringify(data)
-                e.target.textContent = "unlike"
+                e.target.innerHTML = `<i class="fa fa-thumbs-up" aria-hidden="true"></i> unlike`
                 console.log(res)
                 return res
             }
@@ -394,7 +395,7 @@ async function handleAnimeClicks(e) {
             data.liked = false
             anime.liked = false
             this.dataset.anime = JSON.stringify(data)
-            e.target.textContent = 'like'
+            e.target.innerHTML = '<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> like'
             return res
         }
     }
@@ -408,7 +409,7 @@ async function handleAnimeClicks(e) {
                 data.wished = true
                 anime.wished = true
                 this.dataset.anime = JSON.stringify(data)
-                e.target.textContent = "unwish"
+                e.target.innerHTML = '<i class="fa fa-star" aria-hidden="true"></i> unwish'
                 return res
 
             }
@@ -422,7 +423,7 @@ async function handleAnimeClicks(e) {
             data.wished = false
             anime.wished = false
             this.dataset.anime = JSON.stringify(data)
-            e.target.textContent = 'wish'
+            e.target.innerHTML = '<i class="fa fa-star-o" aria-hidden="true"></i> wish'
             return res
         }
     }
@@ -486,28 +487,12 @@ async function fillSeasons(input, yearInput) {
 
 
 
-// if (document.querySelector('#seasonForm')) {
-//     document.querySelector('#seasonForm').addEventListener('submit', async function (e) {
-//         e.preventDefault()
-//         cleanSearchResults()
-//         generateAnimeFromSeason(yearInput.value, seasonInput.value)
-//     })
-// }
-
 async function generateAnimeFromSeason(year, season) {
     let res = await API.getAnimeFromSeason(year, season)
     generateAnime(animeContainer, res)
 }
 
-// if (document.querySelector('#idForm')) {
-//     document.querySelector('#idForm').addEventListener('submit', async function (e) {
-//         e.preventDefault()
-//         const typeValue = document.querySelector('#subtype').value
-//         cleanSearchResults()
-//         topPage = 0;
-//         generateTopAnime(typeValue)
-//     })
-// }
+
 
 async function generateTopAnime(subtype) {
     topPage++

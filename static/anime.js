@@ -11,14 +11,14 @@ class Anime {
         let likeBtnText
         let wishBtnText
         if (this.liked === true) {
-            likeBtnText = 'unlike'
+            likeBtnText = '<i class="fa fa-thumbs-up" aria-hidden="true"></i> unlike'
         } else {
-            likeBtnText = 'like'
+            likeBtnText = '<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> like'
         }
         if (this.wished === true) {
-            wishBtnText = 'unwish'
+            wishBtnText = '<i class="fa fa-star" aria-hidden="true"></i> unwish'
         } else {
-            wishBtnText = 'wish'
+            wishBtnText = '<i class="fa fa-star-o" aria-hidden="true"></i> wish'
         }
 
         return this.innerHtml = `<div class="anime-block__image">
@@ -44,7 +44,7 @@ class Anime {
                             <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
                         </div>
                         <div class="anime-modal__data">
-                        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+                        <a href="/anime/recommendations/${obj.mal_id}?title=${obj.title}" class = "recommendation-link">Get recommendations for this anime</a>
                         <a href="/anime/${obj.mal_id}" class = "dedicated-link">See full anime page</a>
                             <ul class="anime-modal__data--list">
                                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
@@ -76,7 +76,7 @@ class Anime {
                             <img src = "${obj.image_url}" alt = "${obj.title}">
                         </div>
                         <div class="anime-modal__data pt-medium">
-                        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+                        <a href="/anime/recommendations/${obj.mal_id}?title=${obj.title}" class = "recommendation-link">Get recommendations for this anime</a>
                         <a href="/anime/${obj.mal_id}" class = "dedicated-link">See full anime page</a>
                             <ul class="anime-modal__data--list">
                                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
@@ -116,7 +116,7 @@ class Anime {
             <iframe src="${obj.trailer_url}" frameborder="2" allowfullscreen="allowfullscreen"></iframe>
         </div>
         <div class="anime-modal__data">
-        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+        <a href="/anime/recommendations/${obj.mal_id}?title=${obj.title}" class = "recommendation-link">Get recommendations for this anime</a>
             <ul class="anime-modal__data--list">
                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                 <li><strong>Status:</strong> ${obj.status}</li>
@@ -151,7 +151,7 @@ class Anime {
             <img src = "${obj.image_url}" alt = "${obj.title}">
         </div>
         <div class="anime-modal__data pt-medium">
-        <a href="/anime/recommendations/${obj.mal_id}" class = "recommendation-link">Get recommendations for this anime</a>
+        <a href="/anime/recommendations/${obj.mal_id}?title=${obj.title}" class = "recommendation-link">Get recommendations for this anime</a>
             <ul class="anime-modal__data--list">
                 <li><strong>Episodes:</strong> ${obj.episodes}</li>
                 <li><strong>Status:</strong> ${obj.status}</li>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{%block title%}{{g.user.username}} Liked Animes{%endblock%}
+{%block title%}Your Liked Animes{%endblock%}
+{%block header%}Your Liked Animes{%endblock%}
 {% block content%}
 <div class="container">
 <h1>See What {{g.user.username}} Likes!</h1>
@@ -17,8 +18,8 @@
             <h3 class="anime-block__title-header">{{like.title}}</h3>
         </div>
         <div class = "anime-block__buttons">
-            <button class="btn btn-primary" data-type = "like-anime">unlike</button>
-            <button class='btn btn-secondary' data-type= "wish-anime">unwish</button>
+            <button class="btn btn-primary" data-type = "like-anime"><i class="fa fa-thumbs-up" aria-hidden="true"></i> unlike</button>
+            <button class='btn btn-secondary' data-type= "wish-anime"><i class="fa fa-star" aria-hidden="true"></i> unwish</button>
         </div>
     </div>
     {% else %}
@@ -31,8 +32,8 @@
             <h3 class="anime-block__title-header">{{like.title}}</h3>
         </div>
         <div class = "anime-block__buttons">
-            <button class="btn btn-primary" data-type = "like-anime">unlike</button>
-            <button class='btn btn-secondary' data-type= "wish-anime">wish</button>
+            <button class="btn btn-primary" data-type = "like-anime"><i class="fa fa-thumbs-up" aria-hidden="true"></i> unlike</button>
+            <button class='btn btn-secondary' data-type= "wish-anime"><i class="fa fa-star-o" aria-hidden="true"></i> wish</button>
         </div>
     </div>
 {% endif %}

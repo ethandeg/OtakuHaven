@@ -18,7 +18,7 @@
         <span class="navbar-toggle" id="js-navbar-toggle">
             <i class="fa fa-bars" aria-hidden="true"></i>
         </span>
-        <a href="/" class="logo"><img src="/static/images/OtakuHavenLogo.png" alt="OtakuHaven Logo" style="height: 80px; width: 100px; padding-top: 8px; padding-bottom: 8px;" ></a>
+        <a href="/" class="logo"><img src="/static/images/OtakuHavenLogo.png" alt="OtakuHaven Logo"></a>
         <ul class="main-nav" id="js-menu">
             <li>
                 <a href="/" class="nav-links">Home</a>
@@ -50,9 +50,13 @@
             {% endif %}
         </ul>
 </nav>
-<!-- <section class="hero-header">
-    <img src="/static/images/otakuhero.png" alt="Otaku Haven Hero">
-</section> -->
+<section class="hero-header">
+    <div class = "hero-header__title">
+        <h1>OtakuHaven</h1>
+        <hr class="divider">
+        <h2>{%block header %}{%endblock%}</h2>
+    </div>
+</section>
 
     <div class="modal" id="animeModal">
         <div class="anime-modal__content">
