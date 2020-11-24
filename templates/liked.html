@@ -3,7 +3,10 @@
 {%block header%}Your Liked Animes{%endblock%}
 {% block content%}
 <div class="container">
-<h1>See What {{g.user.username}} Likes!</h1>
+    <div class="center-text mb-medium">
+<h1 class = "header-background main-display">See What {{g.user.username}} Likes!</h1>
+    </div>
+{% if g.user.liked %}
 <div class="anime-container">
 {% for like in g.user.liked %}
 {% if like.mal_id in wished %}
@@ -39,6 +42,11 @@
 {% endif %}
 {% endfor %}
 </div>
+{% else %}
+<div class="center-text">
+    <h3 class="header-background sub-display">{{g.user.username}} doesn't like any anime yet.</h3>
+</div>
+{% endif %}
 </div>
 {% endblock %}
 {% block script %}

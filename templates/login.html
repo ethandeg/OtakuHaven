@@ -3,19 +3,21 @@
 {%block header%}Login{%endblock%}
 {% block content%}
 <div class="container">
-<h1>Login</h1>
-<form action="{{ url_for('login_user') }}" method= 'POST'> 
+    <div class="center-text mb-medium">
+<h1 class = "header-background main-display">Login</h1>
+    </div>
+<form action="{{ url_for('login_user') }}" method= 'POST' id="signup-form"> 
     {{form.hidden_tag()}}
     {% for field in form %}
         {%if field.widget.input_type != 'hidden' %}
-        {{field.label}}
+        {{field.label(class_="header-background min-display")}}
         {{field(class_='form-control')}}
         {% for error in field.errors %}
         <p class = "errors">{{ error }}</p>
         {% endfor %}
         {%endif%}
         {% endfor %}
-    <button>Login</button>
+    <button class='btn btn-secondary'><i class="fa fa-sign-in" aria-hidden="true"></i> Login</button>
 </form>
 </div>
 {% endblock %}

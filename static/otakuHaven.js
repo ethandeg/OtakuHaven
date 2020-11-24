@@ -46,8 +46,8 @@ window.onclick = function (e) {
 if (bySearch) {
     bySearch.addEventListener('click', function (e) {
         let html = `<form action="anime/search" class = "form" id="search-by-name-form">
-                        <input type="text" name="query" id="query">
-                        <button>Search</button>`
+                        <input type="text" name="query" id="query" placeholder="Search by Name">
+                        <button class ="btn btn-secondary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>`
         console.log(html)
         formBlock.innerHTML = html
         let form = document.querySelector('#search-by-name-form')
@@ -60,7 +60,7 @@ if (bySeason) {
         let html = `<form id ="seasonForm">
                         <select name ="year" id ="year"></select>
                         <select name = "season" id = "season"></select>
-                        <button>Search</button>`
+                        <button class = "btn btn-secondary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>`
         formBlock.innerHTML = html
         let form = document.querySelector('#seasonForm')
         const yearInput = document.querySelector('#year')
@@ -75,7 +75,9 @@ if (bySeason) {
         form.addEventListener('submit', async function (e) {
             e.preventDefault()
             cleanSearchResults()
+            createLoader(animeContainer)
             generateAnimeFromSeason(yearInput.value, seasonInput.value)
+            removeLoader(document.querySelector('.loader'))
         })
     })
 
@@ -94,7 +96,7 @@ if (byTop) {
             <option value="bypopularity">By Popularity</option>
             <option value="favorite">Favorite</option>
         </select>
-        <button>Search</button>
+        <button class = "btn btn-secondary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
     </form>`
 
         formBlock.innerHTML = html;
@@ -209,8 +211,10 @@ for (let genreBlock of genreBlocks) {
 async function generateAnimeFromSearch(e) {
     e.preventDefault()
     let text = document.querySelector('#query').value;
-    let data = await API.getAnimeBySearch(text)
     cleanSearchResults()
+    createLoader(animeContainer)
+    let data = await API.getAnimeBySearch(text)
+    removeLoader(document.querySelector('.loader'))
     document.querySelector('#query').textContent = ''
     generateAnime(animeContainer, data)
 
@@ -219,8 +223,10 @@ async function generateAnimeFromSearch(e) {
 //Handling search for anime based on a recommendation from another
 
 async function generateAnimeFromRecommendation(id) {
-    let res = await API.getAnimeFromRecommendation(id)
     cleanSearchResults()
+    createLoader(animeContainer)
+    let res = await API.getAnimeFromRecommendation(id)
+    removeLoader(document.querySelector('.loader'))
     if(res.length > 0){
         generateAnime(animeContainer, res)
     } else {
@@ -292,7 +298,7 @@ function createMoreResultsBtn(data, id) {
 }
 
 async function generateAnimeFromSpecificGenre(genre_id) {
-
+    createLoader(animeContainer)
     let res = await API.getAnimeFromSpecificGenre(genre_id)
     if (genrePages.includes(res.page)) {
         removeResultsButton()
@@ -302,29 +308,31 @@ async function generateAnimeFromSpecificGenre(genre_id) {
         createMoreResultsBtn('genre', genre_id)
     }
 
-
+    removeLoader(document.querySelector('.loader'))
 }
 
 
 async function generateAnimeFromUpcomming() {
     cleanSearchResults()
+    createLoader(animeContainer)
     let res = await API.getUpcomingAnime()
+    removeLoader(document.querySelector('.loader'))
     generateAnime(animeContainer, res)
 }
 
 
 async function generateRecommendedAnimeFromGenre() {
+    createLoader(animeContainer)
     let res = await API.getAnimeRecommendationsFromGenre()
-
     for (let i = 0; i < res.length; i++) {
         let fullRow = document.createElement('div')
         fullRow.classList.add('full-row')
-        fullRow.innerHTML = `<h3>${res[i].genre.name}</h3>`
+        fullRow.innerHTML = `<div class = "mb-small"><h3 class = "sub-display header-background">${res[i].genre.name} Anime</h3></div>`
         animeContainer.append(fullRow)
         generateAnime(fullRow, res[i].anime)
 
     }
-
+    removeLoader(document.querySelector('.loader'))
 }
 
 async function generateDedicatedAnimeData(id) {
@@ -342,12 +350,18 @@ async function generateDedicatedAnimeData(id) {
 }
 
 async function generateAnimeFromGenericRecommendation() {
+    createLoader(animeContainer)
     let res = await API.getGenericRecommendation()
+    removeLoader(document.querySelector('.loader'))
     let fullRow = document.createElement('div')
     fullRow.classList.add('full-row')
     console.log(res)
     if (res.genre) {
-        fullRow.innerHTML = `<h3>Because you like ${res.genre.name}</h3>`
+        let newDiv=document.createElement('div')
+        newDiv.classList.add('mb-small')
+        newDiv.classList.add('mt-medium')
+        newDiv.innerHTML = `<h3 class="sub-display header-background">Because you like ${res.genre.name} Anime</h3>`
+        animeContainer.append(newDiv)
         animeContainer.append(fullRow)
         generateAnime(fullRow, res.anime)
         createMoreResultsBtn('recommendation')
@@ -358,13 +372,17 @@ async function generateAnimeFromGenericRecommendation() {
         removeResultsButton()
     }
     else if(res === "no recommendations for this anime"){
-        fullRow.innerHTML = `<h3>This anime doesn't come with any recommendations...</h3>`
+        fullRow.innerHTML = `<div class = "mb-small"><h3 class = "sub-display header-background">This anime doesn't come with any recommendations...</h3></div>`
         animeContainer.append(fullRow)
         createMoreResultsBtn('recommendation')
     }
 
     else {
-        fullRow.innerHTML = `<h3>Because you like ${res.title}`
+        let newDiv=document.createElement('div')
+        newDiv.classList.add('mb-small')
+        newDiv.classList.add('mt-medium')
+        newDiv.innerHTML = `<h3 class = "sub-display header-background">Because you like ${res.title}</h3>`
+        animeContainer.append(newDiv)
         animeContainer.append(fullRow)
         generateAnime(fullRow, res.anime)
         createMoreResultsBtn('recommendation')
@@ -510,7 +528,9 @@ async function generateTopAnime(subtype) {
 if (document.querySelector('#day-of-week')) {
     document.querySelector('#day-of-week').addEventListener('click', async function () {
         cleanSearchResults()
+        createLoader(animeContainer)
         let res = await API.getAnimeByDay()
+        removeLoader(document.querySelector('.loader'))
         generateAnime(animeContainer, res)
     })
 
@@ -629,3 +649,4 @@ function createLoader(container){
 function removeLoader(div){
     div.remove()
 }
+

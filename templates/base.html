@@ -98,7 +98,10 @@
     {% endif %}
 
     {% for category, message in get_flashed_messages(with_categories=True) %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
+    <div class="alert alert-{{ category }}">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        {{ message }}
+    </div>
     {% endfor %}
 
     {% block content %}{% endblock %}

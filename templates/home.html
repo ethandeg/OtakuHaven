@@ -2,14 +2,16 @@
 {%block title%}Home Page{%endblock%}
 {%block header%}Home Page{%endblock%}
 {% block content%}
-<header class='header'>
-    <h1 class = "header-background">Welcome to OtakuHaven!</h1>
-</header>
+
 <div class='container'>
-    <div id="form-block">
+    <div class="center-text mb-medium">
+    <h1 class = "header-background main-display">Welcome to OtakuHaven!</h1>
+    </div>
+    <div id="form-block" class = "mb-small">
 
     </div>
     <div class="center">
+
     <div class="search-block" id="search-by-name-block">
         <h3>Search by Name</h3>
     </div>
@@ -33,6 +35,7 @@
 
     </div>
 </div>
+
     <div class="anime-container">
 
     </div>
@@ -47,7 +50,7 @@
 {% else %}
 <script>
     async function fillAnime(){
-        animeContainer.innerHTML = "<h3>Top Airing Anime</h3>"
+        animeContainer.innerHTML = "<div class ='center-text mb-small'><h3 class = 'header-background sub-display'>Top Airing Anime</h3></div>"
         await generateTopAnime('airing')
         removeResultsButton()
         

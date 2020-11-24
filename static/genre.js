@@ -25,8 +25,8 @@ class Genre {
                                         <h3 class='genre-block__title--title'>${this.name}</h3>
                  </div>
                  <div class="genre-block__footer">
-                     <a href="/genres/${this.id}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
-                     <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
+                     <a href="/genres/${this.id}" class = "btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
+                     <button class='btn btn-secondary like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
                  </div>
              </div>`
         } else {
@@ -35,8 +35,8 @@ class Genre {
                                         <h3 class='genre-block__title--title'>${this.name}</h3>
                  </div>
                  <div class="genre-block__footer">
-                     <a href="/genres/${this.id}" class = "btn btn-blue"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
-                     <button class='btn btn-blue like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
+                     <a href="/genres/${this.id}" class = "btn btn-primary"><i class="fa fa-eye" aria-hidden="true"></i> See ${this.name} Anime</a>
+                     <button class='btn btn-secondary like-btn'><i class="fa fa-star" aria-hidden="true"></i> Unlike</button>
                  </div>
              </div>`
         }

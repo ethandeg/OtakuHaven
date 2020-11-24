@@ -5,7 +5,9 @@
 
 {% block content%}
 <div class='container'>
-    <h1>Anime for You!</h1>
+    <div class="center-text mb-large">
+    <h1 class = "header-background main-display">Anime for You!</h1>
+    </div>
     <div class="anime-container">
         
     </div>
@@ -14,7 +16,17 @@
 
 {% endblock %}
 {% block script %}
+{% if g.user %}
 <script>
+
     generateAnimeFromGenericRecommendation()
+
 </script>
+{% else %}
+<script>
+    let subtypes = ['airing', 'upcoming', 'tv', 'movie', 'ova', 'special', 'bypopularity','favorite']
+    let type = subtypes[Math.floor(Math.random()* subtypes.length)];
+    generateTopAnime(type)
+</script>
+{% endif %}
 {% endblock %}

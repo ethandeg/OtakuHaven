@@ -3,12 +3,16 @@
 {%block header%}Your Wishlist{%endblock%}
 {% block content%}
 <div class="container">
-    <div class="anime-container">
-    <h1>{{g.user.username}}'s Wishlist</h1>
-    <form action="{{url_for('create_wishlist_pdf')}}" method='POST'>
+    <div class="center-text mb-medium">
+    <h1 class = "header-background main-display">{{g.user.username}}'s Wishlist</h1>
+    </div>
+    {% if g.user.wished %}
+    <form action="{{url_for('create_wishlist_pdf')}}" method='POST' class = "mb-medium">
         <input type="hidden" id="wished-html" name="wished-html">
-        <button>create pdf</button>
+        <button class = "btn btn-blue">create pdf</button>
     </form>
+    <div class="anime-container">
+
     {% for wish in g.user.wished %}
     {% if wish.mal_id in liked %}
     <div class="anime-block"
@@ -42,6 +46,11 @@
     {% endif %}
     {% endfor %}
 </div>
+{% else %}
+<div class="center-text">
+    <h3 class="header-background sub-display">{{g.user.username}} doesn't have any anime on his/her wishlist.</h3>
+</div>
+{% endif %}
 </div>
 {% endblock %}
 {% block script %}

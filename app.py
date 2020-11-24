@@ -102,7 +102,7 @@ def signup_user():
             return redirect('/signup')
 
         do_login(user)
-
+        flash(f"Welcome to Otakuhaven {user.username}",'success')
         return redirect('/')
     else:
         return render_template('signup.html', form=form)
@@ -166,7 +166,7 @@ def login_user():
             flash(f"Hello, {user.username}!", "success")
             return redirect('/')
         else:
-            flash("Invalid login credentials")
+            flash("Invalid login credentials", 'danger')
             return redirect('/login')
     
     return render_template('login.html', form=form)
@@ -200,10 +200,8 @@ def remove_liked_category():
 @app.route('/anime')
 def show_anime():
     """Ultimate recommendations route"""
-    if g.user:
-        return render_template('anime.html')
-    else:
-        return "no logged in user"
+    return render_template('anime.html')
+
 
 
 @app.route('/api/getanime/genre')

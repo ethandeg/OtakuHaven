@@ -12,6 +12,7 @@
 
 {% block script %}
 <script>
+    document.querySelector('body').style.backgroundColor = 'white';
     generateDedicatedAnimeData(Number(animeContainer.dataset.id))
     animeContainer.addEventListener('click', handleAnimeClicks)
 </script>
