@@ -574,3 +574,9 @@ def get_full_recommendations():
             return jsonify(res)
     else:
         return "no logged in user" 
+
+@app.route('/cleanpicked', methods=['DELETE'])
+def clean_picked():
+    picked['anime'] = []
+    picked['genres'] = []
+    return jsonify(picked)

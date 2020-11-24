@@ -650,3 +650,13 @@ function removeLoader(div){
     div.remove()
 }
 
+
+async function cleanPicked(){
+    let res = await axios({
+        method: 'DELETE',
+        url: '/cleanpicked',
+        headers: { 'Content-type': 'application/json' }
+    })
+    console.log(res)
+
+}
