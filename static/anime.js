@@ -34,9 +34,9 @@ class Anime {
     </div>`
     }
 
-    static createFullData(obj){
-        if(obj.trailer_url){
-            
+    static createFullData(obj) {
+        if (obj.trailer_url) {
+
             let html = `
                             <div class = "anime-modal__title"><h2 class="anime-modal__hero--title">${obj.title}</h2></div>
                             <div class = "anime-modal__hero">
@@ -63,10 +63,10 @@ class Anime {
                                     &nbsp;
                             </div>
                             `
-            
+
 
             return html
-        } else{
+        } else {
             let html = `
                             <div class = "anime-modal__title">
                             <h2 class="anime-modal__hero--title">${obj.title}</h2>
@@ -102,13 +102,13 @@ class Anime {
 
     }
 
-    static createDedicatedData(obj){
+    static createDedicatedData(obj) {
         let producers = obj.producers.join(', ')
         let licensors = obj.licensors.join(', ')
         let studios = obj.studios.join(', ')
 
 
-        if(obj.trailer_url){
+        if (obj.trailer_url) {
             let html = ` 
             <div class = "anime-modal__title"><h2 class="anime-modal__hero--title">${obj.title}</h2></div>
             <div class = "anime-modal__hero">
@@ -232,7 +232,6 @@ class Anime {
         const results = []
         let res = await axios.get('/api/getanime/genre')
         let data = res.data
-        console.log(data)
         for (let i = 0; i < data.length; i++) {
             let obj = { "genre": null, "anime": [] }
             let genre = new Genre(data[i].id, data[i].genre)
@@ -245,7 +244,6 @@ class Anime {
             results.push(obj)
 
         }
-        console.log(results)
         return results
     }
 

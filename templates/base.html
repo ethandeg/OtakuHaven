@@ -42,22 +42,34 @@
             </li>
             {% else %}
             <li>
-                <a href="/signup" class="nav-links" id = "nav-signup">Signup</a>
+                <a href="/signup" class="nav-links" id="nav-signup">Signup</a>
             </li>
             <li>
-                <a href="/login" class="nav-links" id = "nav-login">Login</a>
+                <a href="/login" class="nav-links" id="nav-login">Login</a>
             </li>
             {% endif %}
         </ul>
-</nav>
-<section class="hero-header">
-    <div class = "hero-header__title">
-        <h1>OtakuHaven</h1>
-        <hr class="divider">
-        <h2>{%block header %}{%endblock%}</h2>
-    </div>
-</section>
+    </nav>
+    {% if request.path == "/" %}
+    <section class="hero-header">
 
+        <div class="hero-header__title">
+            <h1>OtakuHaven</h1>
+            <hr class="divider">
+            <h2>Home Page</h2>
+        </div>
+    </section>
+    {% else %}
+    <section class="hero-header-2">
+
+        <div class="hero-header__title">
+            <h1>OtakuHaven</h1>
+            <hr class="divider">
+            <h2>{%block header %}{%endblock%}</h2>
+        </div>
+    </section>
+
+    {% endif %}
     <div class="modal" id="animeModal">
         <div class="anime-modal__content">
             <span class="close">&times;</span>
@@ -114,13 +126,13 @@
         <div class="footer-left">
             <h3>OtakuHaven</h3>
 
-            <p class="footer-links" id = "footer-links">
+            <p class="footer-links" id="footer-links">
                 <a href="/">Home</a>
                 |
                 <a href="/genres">Genres</a>
                 |
                 <a href="/anime">Recommendations</a>
-                <span class = "footer-remove">|</span>
+                <span class="footer-remove">|</span>
                 {% if g.user %}
                 <a href="/user/liked">Liked Anime</a>
                 |
@@ -128,9 +140,9 @@
                 |
                 <a href="/logout">Logout</a>
                 {% else %}
-                <a href="/login" id = 'footer-login'>Login</a>
+                <a href="/login" id='footer-login'>Login</a>
                 |
-                <a href="/signup" id = 'footer-signup'>Signup</a>
+                <a href="/signup" id='footer-signup'>Signup</a>
                 {% endif %}
             </p>
 
@@ -140,7 +152,7 @@
         <div class="footer-center">
             <div>
                 <i class="fa fa-map-marker"></i>
-                  <p><span>3401 Hiram St., #A</span>
+                <p><span>3401 Hiram St., #A</span>
                     Saint Charles, MO 63301</p>
             </div>
 
@@ -156,12 +168,13 @@
         <div class="footer-right">
             <p class="footer-company-about">
                 <span>About OtakuHaven</span>
-                OtakuHaven was created by Ethan Degenhardt as a passion project due to his love for anime, and desire to always get recommended new ones. 
+                OtakuHaven was created by Ethan Degenhardt as a passion project due to his love for anime, and desire to
+                always get recommended new ones.
                 The tech stack:<br>
                 -API: https://jikan.moe/<br>
                 -Back-end: Python/Flask, PostGRESQL, and SQLAlchemy<br>
                 -Front-end: Vanilla Javascript, HTML, CSS, and Axios
-                </p>
+            </p>
             <div class="footer-icons">
                 <a href="https://www.facebook.com/ethan.degenhardt"><i class="fa fa-facebook"></i></a>
                 <a href="https://www.linkedin.com/in/ethandegenhardt/"><i class="fa fa-linkedin"></i></a>

@@ -9,4 +9,4 @@ def create_pdf(html, username):
 
 def delete_pdf(path):
     os.remove(path)
-    print(f"removed {path}")
+

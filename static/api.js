@@ -6,7 +6,7 @@ class API {
     static async getAnimeFromSpecificGenre(genre_id) {
         let res = await axios.get(`/api/genres/${genre_id}`)
         let genre = new Genre(res.data.id, res.data.genre)
-        let newObj = { "genre": genre, "anime": [], page: res.data.page}
+        let newObj = { "genre": genre, "anime": [], page: res.data.page }
         for (let i = 0; i < res.data.anime.length; i++) {
             let anime = new Anime(res.data.anime[i])
             newObj.anime.push(anime)
@@ -22,7 +22,6 @@ class API {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
-            console.log(results)
             return results
         } else {
             let res = await axios.get('/api/anime/recommend')
@@ -30,7 +29,6 @@ class API {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
-            console.log(results)
             return results
         }
 
@@ -42,7 +40,6 @@ class API {
         const results = []
         let res = await axios.get('/api/getanime/genre')
         let data = res.data
-        console.log(data)
         for (let i = 0; i < data.length; i++) {
             let obj = { "genre": null, "anime": [] }
             let genre = new Genre(data[i].id, data[i].genre)
@@ -55,14 +52,12 @@ class API {
             results.push(obj)
 
         }
-        console.log(results)
         return results
     }
 
     static async getAnimeBySearch(query) {
         let res = await axios.get(`/anime/search?query=${query}`)
         const results = []
-        console.log(res.data)
         for (let i = 0; i < res.data.length; i++) {
             let anime = new Anime(res.data[i])
             results.push(anime)
@@ -123,7 +118,6 @@ class API {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
-            console.log(results)
             return results
 
         } else {
@@ -132,48 +126,46 @@ class API {
                 let anime = new Anime(res.data[i])
                 results.push(anime)
             }
-            console.log(results)
             return results
         }
 
     }
 
-    static async getDedicatedAnimeData(id){
+    static async getDedicatedAnimeData(id) {
         let res = await axios.get(`/api/anime/dedicated?mal_id=${id}`)
-        console.log(res.data)
         return res.data
     }
 
-    static async getGenericRecommendation(){
+    static async getGenericRecommendation() {
         let res = await axios.get(`/api/anime/recommendations`)
-        if(res.data.genre){
-            let results = {"anime": [],
-                            "genre": null}
+        if (res.data.genre) {
+            let results = {
+                "anime": [],
+                "genre": null
+            }
             let genre = new Genre(res.data.id, res.data.genre, true)
             results.genre = genre
-            for(let i = 0; i < res.data.anime.length; i++){
+            for (let i = 0; i < res.data.anime.length; i++) {
                 let anime = new Anime(res.data.anime[i])
                 results.anime.push(anime)
             }
-            console.log(results)
             return results
-        
-            
+
+
         }
-        
-        else if(res.data.message === "no more"){
+
+        else if (res.data.message === "no more") {
             return res.data.message
         }
-        
+
         else {
-            let results = {title: null, anime: []}
+            let results = { title: null, anime: [] }
             results.title = res.data[1]
-            for(let i = 0; i < res.data[0].length; i++){
+            for (let i = 0; i < res.data[0].length; i++) {
                 let anime = new Anime(res.data[0][i])
                 results.anime.push(anime)
             }
-            console.log(results)
-            if(results.anime.length === 0){
+            if (results.anime.length === 0) {
                 return "no recommendations for this anime"
             }
             return results

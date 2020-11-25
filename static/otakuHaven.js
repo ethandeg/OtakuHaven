@@ -1,6 +1,5 @@
 let usersAnimeFromGenre = null
 let genreBlocks = document.querySelectorAll('.genre-block')
-// const form = document.querySelector('#search-by-name-form')
 let animeModal = document.querySelector("#animeModal")
 let closeBtn = document.querySelectorAll('.close')
 let loginModal = document.querySelector('#loginModal')
@@ -48,7 +47,6 @@ if (bySearch) {
         let html = `<form action="anime/search" class = "form" id="search-by-name-form">
                         <input type="text" name="query" id="query" placeholder="Search by Name">
                         <button class ="btn btn-secondary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>`
-        console.log(html)
         formBlock.innerHTML = html
         let form = document.querySelector('#search-by-name-form')
         form.addEventListener('submit', generateAnimeFromSearch)
@@ -143,8 +141,7 @@ if (loginForm) {
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
-            console.log(res)
-            if(res.data.error){
+            if (res.data.error) {
                 document.querySelector(".errors").textContent = res.data.error
                 return
             }
@@ -187,13 +184,12 @@ if (loginForm) {
                 "password": document.querySelector('#password').value,
                 "csrf_token": document.querySelector('#csrf_token').value
             })
-            if(res.data.error){
+            if (res.data.error) {
                 document.querySelector(".errors").textContent = res.data.error
                 return
             }
             if (res.status === 200) {
                 loginModal.style.display = "none"
-                console.log(res)
                 changeNavBarAndFooterOnLogin()
             }
         }
@@ -227,12 +223,12 @@ async function generateAnimeFromRecommendation(id) {
     createLoader(animeContainer)
     let res = await API.getAnimeFromRecommendation(id)
     removeLoader(document.querySelector('.loader'))
-    if(res.length > 0){
+    if (res.length > 0) {
         generateAnime(animeContainer, res)
     } else {
         animeContainer.innerHTML = "<h3>No recommendations for this Anime</h3>"
     }
-    
+
 }
 
 //Function for liking/unliking genres
@@ -242,7 +238,6 @@ async function handleGenreClick(e) {
     if (this.dataset.liked === 'false' && target.includes("like-btn")) {
         let res = await Genre.likeGenre(this.dataset.id)
         if (res.status === 201) {
-            console.log(`You officially like ${this.dataset.name}`)
             this.dataset.liked = 'true'
             genreIds.push(Number(this.dataset.id))
             checkGetStartedToggle()
@@ -257,11 +252,9 @@ async function handleGenreClick(e) {
     else if (this.dataset.liked === 'true' && target.includes('like-btn')) {
         let res = await Genre.unLikeGenre(this.dataset.id)
         if (res.status === 200) {
-            console.log(`You don't like ${this.dataset.name}:(`)
             let index = genreIds.indexOf(Number(this.dataset.id))
             if (index > -1) { genreIds.splice(index, 1) }
             checkGetStartedToggle()
-            console.log(genreIds)
             this.dataset.liked = 'false'
             e.target.innerHTML = '<i class="fa fa-star-o" aria-hidden="true"></i> Like'
         }
@@ -355,9 +348,8 @@ async function generateAnimeFromGenericRecommendation() {
     removeLoader(document.querySelector('.loader'))
     let fullRow = document.createElement('div')
     fullRow.classList.add('full-row')
-    console.log(res)
     if (res.genre) {
-        let newDiv=document.createElement('div')
+        let newDiv = document.createElement('div')
         newDiv.classList.add('mb-small')
         newDiv.classList.add('mt-medium')
         newDiv.innerHTML = `<h3 class="sub-display header-background">Because you like ${res.genre.name} Anime</h3>`
@@ -371,14 +363,14 @@ async function generateAnimeFromGenericRecommendation() {
     else if (res === 'no more') {
         removeResultsButton()
     }
-    else if(res === "no recommendations for this anime"){
+    else if (res === "no recommendations for this anime") {
         fullRow.innerHTML = `<div class = "mb-small"><h3 class = "sub-display header-background">This anime doesn't come with any recommendations...</h3></div>`
         animeContainer.append(fullRow)
         createMoreResultsBtn('recommendation')
     }
 
     else {
-        let newDiv=document.createElement('div')
+        let newDiv = document.createElement('div')
         newDiv.classList.add('mb-small')
         newDiv.classList.add('mt-medium')
         newDiv.innerHTML = `<h3 class = "sub-display header-background">Because you like ${res.title}</h3>`
@@ -391,7 +383,6 @@ async function generateAnimeFromGenericRecommendation() {
 //liking/unliking anime
 async function handleAnimeClicks(e) {
     if (e.target.dataset.type === 'like-anime') {
-        console.log(this)
         data = JSON.parse(this.dataset.anime)
         let anime = new Anime(data)
         if (data.liked === false) {
@@ -401,7 +392,6 @@ async function handleAnimeClicks(e) {
                 anime.liked = true
                 this.dataset.anime = JSON.stringify(data)
                 e.target.innerHTML = `<i class="fa fa-thumbs-up" aria-hidden="true"></i> unlike`
-                console.log(res)
                 return res
             }
             else if (res.data.message === "not logged in") {
@@ -460,7 +450,6 @@ async function handleAnimeClicks(e) {
             genreList.append(genre)
 
         }
-        // modal.addEventListener('click', handleAnimeClicks)
 
     }
 
@@ -541,9 +530,7 @@ if (document.querySelector('#upcomming-anime')) {
     document.querySelector('#upcomming-anime').addEventListener('click', generateAnimeFromUpcomming)
 }
 
-// function openModal(){
 
-// }
 
 function getBlocks() {
     const blocks = document.querySelectorAll('.anime-block')
@@ -640,23 +627,22 @@ function changeNavBarAndFooterOnLogin() {
 
 }
 
-function createLoader(container){
+function createLoader(container) {
     let newDiv = document.createElement('div')
     newDiv.classList.add('loader')
     container.append(newDiv)
 }
 
-function removeLoader(div){
+function removeLoader(div) {
     div.remove()
 }
 
 
-async function cleanPicked(){
+async function cleanPicked() {
     let res = await axios({
         method: 'DELETE',
         url: '/cleanpicked',
         headers: { 'Content-type': 'application/json' }
     })
-    console.log(res)
 
 }

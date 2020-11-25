@@ -1,5 +1,4 @@
 import requests
-import json
 from random import shuffle
 import datetime
 import math
@@ -239,7 +238,6 @@ weekdays = {
 today = weekdays[datetime.datetime.today().weekday()]
 
 def get_anime_from_genre(id, likes=[], wished=[]):
-    # IndexError if pages ran out
     try:
         check = [k["pages"] for k in genres if k['id'] == id]
         if check:
@@ -248,8 +246,6 @@ def get_anime_from_genre(id, likes=[], wished=[]):
             pages.insert(0, page)
 
             res = requests.get(f'{JIKAN_BASE_URL}/genre/anime/{id}/{page}')
-            pretty_json = json.loads(res.text)
-            # print(json.dumps(pretty_json, indent=2))
             data = res.json()
             results = {
                 "page": page,
@@ -321,10 +317,8 @@ def get_anime_from_genre(id, likes=[], wished=[]):
 
 def search_for_specific_anime(query, likes=[], wished=[]):
     res = requests.get(f'{JIKAN_BASE_URL}/search/anime?q={query}')
-    pretty_json = json.loads(res.text)
     data = res.json()['results']
     results = []
-    # print(json.dumps(pretty_json, indent=2))
     for result in data:
         results.append({
             "mal_id": result['mal_id'],
@@ -341,7 +335,6 @@ def get_full_anime_data(id, likes=[], wished=[]):
     res = requests.get(f'{JIKAN_BASE_URL}/anime/{id}')
     results = {}
     data = res.json()
-    # print(json.dumps(data, indent=2))
     
     if data["title_english"]:
         results["title"] = data["title_english"]

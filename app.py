@@ -84,6 +84,7 @@ def show_categories():
 def logout():
     """Handle logout of user."""
     do_logout()
+    flash("You have successfully logged out", "info")
     return redirect('/')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -121,14 +122,12 @@ def sign_up_user_from_popup():
             db.session.commit()
 
         except IntegrityError:
-            flash("Username already taken", 'danger')
             return jsonify(error="Username already taken")
 
         do_login(user)
 
         return jsonify(message="You are now signed up")
     else:
-        # return render_template('signup.html', form=form)
         return jsonify(error="Username must be less than 30 characters and Password must be between 4-50 characters")
 
 
@@ -147,7 +146,6 @@ def login_user_from_popup():
             info["likes"] = [like.mal_id for like in user.liked]
             info["wished"] = [wish.mal_id for wish in user.wished]
             info["genres"] = [genre.genre_id for genre in user.genre]
-            flash(f"Hello, {user.username}!", "success")
             return jsonify(info)
         else:
             return jsonify(error="Invalid Username or Password")
@@ -565,7 +563,6 @@ def get_full_recommendations():
             anime = LikedAnime.query.filter_by(mal_id=mal_id).first()
             title = anime.title
             res = get_recommendations_by_anime(mal_id, likes, wished)
-            print(res,title)
             return jsonify(res,title)
         elif category == "genres":
             mal_id = choice(recommendations['genres'])
