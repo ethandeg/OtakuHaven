@@ -503,7 +503,9 @@ async function generateAnimeFromSeason(year, season) {
 
 async function generateTopAnime(subtype) {
     topPage++
+    createLoader(animeContainer)
     let res = await API.getTopAnime(subtype, topPage)
+    removeLoader(document.querySelector('.loader'))
     if (res !== "page not found") {
         generateAnime(animeContainer, res)
         createMoreResultsBtn(subtype, 'top')

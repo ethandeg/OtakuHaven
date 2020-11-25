@@ -58,7 +58,6 @@ margin-right: 1rem;
   margin-top: 7rem;
   width: 100%;
   height: 80vh;
-  /* background-image: linear-gradient(to right bottom, rgba(240, 20, 155, 0.2), rgba(245, 40, 200, 0.2)),url(https://images.hdqwalls.com/wallpapers/anime-cityscape-landscape-scenery-5k-r6.jpg); */
   background-image: url(/static/images/heroimage1.jpg);
   background-size: cover;
   background-position: bottom;
@@ -205,6 +204,17 @@ margin-right: 1rem;
   margin-left: .5rem;
   white-space: normal;
 }
+@media screen and (max-width: 563px) {
+	.anime-block,
+.anime-block > * {
+	-webkit-transform:scale(0.9);
+	-moz-transform:scale(0.9);
+	-ms-transform:scale(0.9);
+	transform: scale(0.9);
+
+}
+}
+
 
 
 
@@ -267,7 +277,8 @@ margin-right: 1rem;
   position: absolute;
   width: 25rem;
   text-align: center;
-  
+  padding-left: .5rem;
+  padding-right: .5rem;
 
 }
 
@@ -384,16 +395,16 @@ margin-right: 1rem;
 
 
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
   }
 
 .login-modal-content {
@@ -454,7 +465,7 @@ margin-right: 1rem;
     margin: 5% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 80%; 
   }
   .anime-modal__container {
     padding-bottom: 5rem;
@@ -744,7 +755,7 @@ margin-right: 1rem;
 
 .center-genre {
     margin-left: 50%;
-    transform: translateX(-40%);
+    transform: translateX(-33%);
 }
 
 @media screen and (max-width: 968px) {
@@ -856,13 +867,26 @@ margin-right: 1rem;
   display: block;
 }
 
-@media screen and (min-width: 968px) {
+@media screen and (max-width: 1034px) {
+	.hero-header{
+		margin-top: 12rem;
+	}
+	.hero-header__title{
+		margin-top: 8rem;
+	}
+	.hero-header-2{
+		margin-top: 12rem;
+	}
+}
+
+@media screen and (min-width: 1034px) {
   .navbar {
       display: flex;
       justify-content: space-between;
       padding-bottom: 0;
       height: 7rem;
       align-items: center;
+
   }
 
   .main-nav {
