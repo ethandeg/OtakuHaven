@@ -15,10 +15,10 @@ picked = {
 CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///otakuhaven'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///otakuhaven')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['SECRET_KEY'] = 'CodyIsTheBestDoggy92384721'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'codyisthebestdoggy9999')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
