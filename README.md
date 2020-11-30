@@ -1,4 +1,5 @@
 # OtakuHaven
+App url - https://otakuhaven.herokuapp.com/
 ## API
 * https://jikan.docs.apiary.io/#
 ## Tech Stack
