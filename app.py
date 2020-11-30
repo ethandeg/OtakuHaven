@@ -198,8 +198,11 @@ def remove_liked_category():
 @app.route('/anime')
 def show_anime():
     """Ultimate recommendations route"""
-    return render_template('anime.html')
-
+    if g.user:
+        return render_template('anime.html')
+    else:
+        flash("It is recommended to create an account or login to get better recommendations", "info")
+        return render_template('anime.html')
 
 
 @app.route('/api/getanime/genre')
