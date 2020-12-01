@@ -38,6 +38,7 @@ def add_user_to_g():
         g.form = UserForm()
 
 
+
 def do_login(user):
     """Log in user."""
 
