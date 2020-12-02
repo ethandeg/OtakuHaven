@@ -202,7 +202,6 @@ def show_anime():
                         'anime':[],
                         'genres': []
                         }
-        print(session['picked'])
         return render_template('anime.html')
     else:
         flash("It is recommended to create an account or login to get better recommendations", "info")
@@ -546,7 +545,6 @@ def show_recommendations_for_anime(mal_id):
 def get_full_recommendations():
     """This route gives a recommendation response based off of liked animes or genres"""
     if g.user:
-        print(session['picked'])
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
         not_picked_likes = [id for id in likes if id not in session['picked']['anime']]
@@ -560,8 +558,10 @@ def get_full_recommendations():
         try:
             category = choice(keys)
         except IndexError:
-            session['picked']['anime'] = []
-            session['picked']['genres'] = []
+            buffer2 = session['picked']
+            buffer2['anime'] = []
+            buffer2['genres'] = []
+            session['picked'] = buffer2
             not_picked_likes = [id for id in likes if id not in session['picked']['anime']]
             not_picked_genres = [id for id in genre_ids if id not in session['picked']['genres']]
             return jsonify(message='no more')
@@ -586,6 +586,8 @@ def get_full_recommendations():
 
 @app.route('/cleanpicked', methods=['DELETE'])
 def clean_picked():
-    session['picked']['anime'] = []
-    session['picked']['genres'] = []
+    buffer = session['picked']
+    buffer['anime'] = []
+    buffer['genres'] = []
+    session['picked'] = buffer
     return jsonify(session['picked'])
