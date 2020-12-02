@@ -4,7 +4,7 @@ from models import db, connect_db, User, LikedAnime, WishListAnime, UserGenre
 from forms import UserForm
 from jikan import genres, get_anime_from_genre, search_for_specific_anime, get_full_anime_data, get_recommendations_by_anime, search_upcoming_anime, search_by_season, get_years_and_seasons, search_top_anime, weekdays, today, anime_by_day_of_week, get_dedicated_anime_data
 from sqlalchemy.exc import IntegrityError
-from pdf import create_pdf, delete_pdf, get_pdfkit_config
+from pdf import create_pdf, delete_pdf
 from random import sample, choice
 import os
 
