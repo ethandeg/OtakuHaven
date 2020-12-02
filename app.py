@@ -8,10 +8,8 @@ from pdf import create_pdf, delete_pdf, get_pdfkit_config
 from random import sample, choice
 import os
 
-picked = {
-    'anime':[],
-    'genres':[]
-}
+
+
 CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
@@ -200,6 +198,11 @@ def remove_liked_category():
 def show_anime():
     """Ultimate recommendations route"""
     if g.user:
+        session['picked'] = {
+                        'anime':[],
+                        'genres': []
+                        }
+        print(session['picked'])
         return render_template('anime.html')
     else:
         flash("It is recommended to create an account or login to get better recommendations", "info")
@@ -543,11 +546,12 @@ def show_recommendations_for_anime(mal_id):
 def get_full_recommendations():
     """This route gives a recommendation response based off of liked animes or genres"""
     if g.user:
+        print(session['picked'])
         likes = [like.mal_id for like in g.user.liked]
         wished = [wish.mal_id for wish in g.user.wished]
-        not_picked_likes = [id for id in likes if id not in picked['anime']]
+        not_picked_likes = [id for id in likes if id not in session['picked']['anime']]
         genre_ids = [genre.genre_id for genre in g.user.genre]
-        not_picked_genres = [id for id in genre_ids if id not in picked['genres']]
+        not_picked_genres = [id for id in genre_ids if id not in session['picked']['genres']]
         recommendations = {
             'anime': not_picked_likes,
             'genres': not_picked_genres
@@ -556,21 +560,25 @@ def get_full_recommendations():
         try:
             category = choice(keys)
         except IndexError:
-            picked['anime'] = []
-            picked['genres'] = []
-            not_picked_likes = [id for id in likes if id not in picked['anime']]
-            not_picked_genres = [id for id in genre_ids if id not in picked['genres']]
+            session['picked']['anime'] = []
+            session['picked']['genres'] = []
+            not_picked_likes = [id for id in likes if id not in session['picked']['anime']]
+            not_picked_genres = [id for id in genre_ids if id not in session['picked']['genres']]
             return jsonify(message='no more')
         if category == "anime":
             mal_id = choice(recommendations['anime'])
-            picked['anime'].append(mal_id)
+            buffer = session['picked']
+            buffer['anime'].append(mal_id)
+            session['picked'] = buffer
             anime = LikedAnime.query.filter_by(mal_id=mal_id).first()
             title = anime.title
             res = get_recommendations_by_anime(mal_id, likes, wished)
             return jsonify(res,title)
         elif category == "genres":
             mal_id = choice(recommendations['genres'])
-            picked['genres'].append(mal_id)
+            buffer = session['picked']
+            buffer['genres'].append(mal_id)
+            session['picked'] = buffer
             res = get_anime_from_genre(mal_id, likes, wished)
             return jsonify(res)
     else:
@@ -578,6 +586,6 @@ def get_full_recommendations():
 
 @app.route('/cleanpicked', methods=['DELETE'])
 def clean_picked():
-    picked['anime'] = []
-    picked['genres'] = []
-    return jsonify(picked)
+    session['picked']['anime'] = []
+    session['picked']['genres'] = []
+    return jsonify(session['picked'])
